@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numerical Methods — Final Study Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+:root[data-theme="dark"]{
+  --bg:#0e1320;--bg-2:#141b2d;--panel:#161e30;--panel-2:#1b2438;
+  --ink:#e8ecf5;--ink-soft:#aab4c8;--ink-faint:#6b7790;--line:#283349;
+  --accent:#e7b15a;--accent-2:#5fb3d4;--accent-soft:rgba(231,177,90,.14);
+  --good:#6fcf97;--grid:rgba(255,255,255,.025);
+  --shadow:0 18px 50px -20px rgba(0,0,0,.7);--formula-bg:#0b1019;
+}
+:root[data-theme="light"]{
+  --bg:#f4f1ea;--bg-2:#efe9dd;--panel:#fbf9f4;--panel-2:#f3eee3;
+  --ink:#23272f;--ink-soft:#4f5662;--ink-faint:#8a8f9b;--line:#e0d8c8;
+  --accent:#b07d1c;--accent-2:#2f7d96;--accent-soft:rgba(176,125,28,.12);
+  --good:#2e8b57;--grid:rgba(0,0,0,.025);
+  --shadow:0 18px 40px -22px rgba(60,50,30,.35);--formula-bg:#2a2f3a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Hanken Grotesk',sans-serif;background:var(--bg);color:var(--ink);
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px;transition:background-color .4s ease,color .4s ease;
+}
+[lang="ar"] body,[lang="ar"]{font-family:'IBM Plex Sans Arabic',sans-serif}
+[lang="ar"] .brand h1,[lang="ar"] .hero h2,[lang="ar"] section>h3,[lang="ar"] section>h4{font-family:'IBM Plex Sans Arabic',sans-serif;font-weight:700}
+
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:200;transition:width .1s linear}
+.layout{display:grid;grid-template-columns:300px 1fr;max-width:1320px;margin:0 auto;min-height:100vh}
+
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:34px 22px 40px;border-right:1px solid var(--line);background:linear-gradient(180deg,var(--bg-2),var(--bg))}
+[dir="rtl"] .sidebar{border-right:none;border-left:1px solid var(--line)}
+.brand{margin-bottom:24px}
+.brand .kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+.brand h1{font-family:'Fraunces',serif;font-weight:600;font-size:25px;line-height:1.15;letter-spacing:-.01em}
+.brand .sub{color:var(--ink-faint);font-size:12.5px;margin-top:8px;font-family:'JetBrains Mono',monospace}
+
+.lang-toggle{display:flex;gap:6px;margin:16px 0 20px}
+.lang-toggle button{flex:1;cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--ink-soft);padding:8px;border-radius:9px;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all .2s}
+.lang-toggle button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+.search-wrap{position:relative;margin-bottom:22px}
+#search{width:100%;padding:11px 14px 11px 38px;border-radius:11px;background:var(--panel);border:1px solid var(--line);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s}
+[dir="rtl"] #search{padding:11px 38px 11px 14px}
+#search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--ink-faint)}
+[dir="rtl"] .search-wrap svg{left:auto;right:13px}
+.search-meta{font-size:11px;color:var(--ink-faint);margin-top:7px;min-height:14px;font-family:'JetBrains Mono',monospace}
+
+nav .nav-group{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 7px}
+nav a{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink-soft);font-size:13.5px;padding:7px 11px;border-radius:9px;margin-bottom:2px;transition:all .15s;border-left:2px solid transparent}
+[dir="rtl"] nav a{border-left:none;border-right:2px solid transparent}
+nav a .dot{width:5px;height:5px;border-radius:50%;background:var(--ink-faint);flex:none;transition:background .15s}
+nav a:hover{background:var(--panel);color:var(--ink)}
+nav a.active{background:var(--accent-soft);color:var(--ink);border-left-color:var(--accent)}
+[dir="rtl"] nav a.active{border-left-color:transparent;border-right-color:var(--accent)}
+nav a.active .dot{background:var(--accent)}
+
+.main{padding:46px 56px 90px;max-width:900px}
+.topbar{display:flex;justify-content:flex-end;margin-bottom:10px}
+.theme-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--ink-soft);padding:8px 14px;border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all .2s}
+.theme-toggle:hover{color:var(--ink);border-color:var(--accent)}
+
+.hero{margin-bottom:18px;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.hero .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+[lang="ar"] .hero .eyebrow{letter-spacing:normal}
+.hero h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(32px,5vw,50px);line-height:1.05;letter-spacing:-.02em;margin-bottom:16px}
+.hero p{color:var(--ink-soft);font-size:16px;max-width:640px}
+.exam-chip{display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:var(--accent-soft);color:var(--accent);padding:7px 15px;border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:500;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+
+section{padding:42px 0;border-bottom:1px solid var(--line);scroll-margin-top:24px}
+section:last-of-type{border-bottom:none}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:.18em;text-transform:uppercase}
+[lang="ar"] .sec-num{letter-spacing:normal}
+section>h3{font-family:'Fraunces',serif;font-weight:600;font-size:30px;letter-spacing:-.01em;margin:8px 0 6px}
+p{margin:11px 0;color:var(--ink-soft)}
+p strong,li strong{color:var(--ink);font-weight:600}
+.lead{font-size:16.5px;color:var(--ink)}
+ul,ol{margin:12px 0 12px 4px;padding-left:22px;color:var(--ink-soft)}
+[dir="rtl"] ul,[dir="rtl"] ol{padding-left:0;padding-right:22px}
+li{margin:6px 0}
+
+.idea{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);padding:16px 20px;border-radius:0 12px 12px 0;margin:18px 0}
+[dir="rtl"] .idea{border-left:1px solid var(--line);border-right:3px solid var(--accent);border-radius:12px 0 0 12px}
+.idea .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
+[lang="ar"] .idea .label{letter-spacing:normal}
+.idea p{margin:0;color:var(--ink)}
+
+.formula,.matrix{font-family:'JetBrains Mono',monospace;background:var(--formula-bg);color:#e8ecf5;border:1px solid var(--line);border-radius:11px;padding:15px 18px;margin:16px 0;font-size:14px;overflow-x:auto;white-space:pre;line-height:1.7;box-shadow:var(--shadow)}
+[dir="rtl"] .formula,[dir="rtl"] .matrix{direction:ltr;text-align:left}
+.formula .hl{color:var(--accent)}
+
+.t-wrap{overflow-x:auto;margin:18px 0;border-radius:12px;border:1px solid var(--line)}
+[dir="rtl"] .t-wrap{direction:ltr}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--panel)}
+th,td{padding:11px 15px;text-align:left;border-bottom:1px solid var(--line)}
+th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--panel-2)}
+td{color:var(--ink-soft);font-family:'JetBrains Mono',monospace;font-size:13px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--accent-soft)}
+
+.trap{background:color-mix(in srgb,var(--accent) 7%,var(--panel));border:1px dashed color-mix(in srgb,var(--accent) 40%,var(--line));border-radius:12px;padding:15px 19px;margin:18px 0}
+.trap .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+[lang="ar"] .trap .label{letter-spacing:normal}
+.trap ul{margin:0 0 0 4px}
+[dir="rtl"] .trap ul{margin:0 4px 0 0}
+
+/* difficulty filter */
+.diff-bar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 22px}
+.diff-bar button{cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--ink-soft);padding:7px 16px;border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all .2s}
+.diff-bar button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+.plist[data-filter="easy"] .problem:not([data-diff="easy"]),
+.plist[data-filter="med"] .problem:not([data-diff="med"]),
+.plist[data-filter="hard"] .problem:not([data-diff="hard"]){display:none}
+
+.problem{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;transition:border-color .2s}
+.problem:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.problem .p-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.problem .p-id{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--bg);background:var(--accent);min-width:38px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:7px;flex:none;padding:0 6px}
+.problem .p-topic{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+.badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.badge.easy{color:var(--good);background:color-mix(in srgb,var(--good) 16%,transparent)}
+.badge.med{color:var(--accent-2);background:color-mix(in srgb,var(--accent-2) 16%,transparent)}
+.badge.hard{color:#e57373;background:rgba(229,115,115,.16)}
+.solve-btn{cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--ink-soft);font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 15px;border-radius:8px;margin-top:8px;transition:all .2s}
+.solve-btn:hover{border-color:var(--accent);color:var(--accent)}
+.solution{max-height:0;overflow:hidden;transition:max-height .45s ease;border-left:2px solid var(--good);margin-top:0;padding-left:0}
+[dir="rtl"] .solution{border-left:none;border-right:2px solid var(--good)}
+.solution.open{max-height:2200px;margin-top:16px;padding-left:18px}
+[dir="rtl"] .solution.open{padding-left:0;padding-right:18px}
+.solution .s-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--good);display:block;margin-bottom:8px}
+[lang="ar"] .solution .s-label{letter-spacing:normal}
+
+mark{background:var(--accent);color:var(--bg);padding:0 2px;border-radius:3px}
+.hidden{display:none !important}
+.no-results{text-align:center;color:var(--ink-faint);font-family:'JetBrains Mono',monospace;padding:50px 0;font-size:14px}
+footer{padding:34px 0 0;color:var(--ink-faint);font-size:13px;font-family:'JetBrains Mono',monospace;text-align:center}
+.gl{color:var(--accent)}
+
+.menu-btn{display:none}
+@media(max-width:920px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;z-index:150;width:300px;left:-310px;transition:left .3s ease;box-shadow:var(--shadow)}
+  .sidebar.open{left:0}
+  [dir="rtl"] .sidebar{left:auto;right:-310px}
+  [dir="rtl"] .sidebar.open{right:0}
+  .main{padding:70px 22px 70px}
+  .menu-btn{display:inline-flex;position:fixed;top:14px;left:14px;z-index:160;background:var(--panel);border:1px solid var(--line);color:var(--ink);width:42px;height:42px;border-radius:11px;align-items:center;justify-content:center;cursor:pointer}
+  [dir="rtl"] .menu-btn{left:auto;right:14px}
+  .topbar{position:fixed;top:14px;right:14px;z-index:160;margin:0}
+  [dir="rtl"] .topbar{right:auto;left:14px}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:140}
+  .scrim.open{display:block}
+}
+::selection{background:var(--accent);color:var(--bg)}
+.sidebar::-webkit-scrollbar{width:8px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<button class="menu-btn" onclick="toggleNav()" aria-label="menu">☰</button>
+<div class="scrim" id="scrim" onclick="toggleNav()"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="kicker" data-i18n="kicker">CVL · Numerical</span>
+      <h1 data-i18n="brand_h1">Final Exam<br>Study Guide</h1>
+      <span class="sub" data-i18n="brand_sub">5 methods · examples · practice</span>
+    </div>
+
+    <div class="lang-toggle">
+      <button id="btn-en" class="on" onclick="setLang('en')">EN</button>
+      <button id="btn-ar" onclick="setLang('ar')">العربية</button>
+    </div>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search" type="text" placeholder="Search every topic…" autocomplete="off">
+      <div class="search-meta" id="searchMeta"></div>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-group" data-i18n="grp_root">Root-Finding</div>
+      <a href="#bisection" data-sec="bisection"><span class="dot"></span><span data-i18n="nav_bisection">Bisection Method</span></a>
+      <a href="#newton" data-sec="newton"><span class="dot"></span><span data-i18n="nav_newton">Newton-Raphson</span></a>
+      <a href="#secant" data-sec="secant"><span class="dot"></span><span data-i18n="nav_secant">Secant Method</span></a>
+      <a href="#fixedpoint" data-sec="fixedpoint"><span class="dot"></span><span data-i18n="nav_fp">Fixed-Point Iteration</span></a>
+      <div class="nav-group" data-i18n="grp_direct">Linear Systems · Direct</div>
+      <a href="#gauss" data-sec="gauss"><span class="dot"></span><span data-i18n="nav_gauss">Gaussian Elimination</span></a>
+      <a href="#inverse" data-sec="inverse"><span class="dot"></span><span data-i18n="nav_inv">Inverse Matrix Method</span></a>
+      <div class="nav-group" data-i18n="grp_iter">Linear Systems · Iterative</div>
+      <a href="#jacobi" data-sec="jacobi"><span class="dot"></span><span data-i18n="nav_jacobi">Jacobi Iteration</span></a>
+      <a href="#seidel" data-sec="seidel"><span class="dot"></span><span data-i18n="nav_seidel">Gauss-Seidel</span></a>
+      <a href="#errbound" data-sec="errbound"><span class="dot"></span><span data-i18n="nav_err">Error / Truncation Bound</span></a>
+      <div class="nav-group" data-i18n="grp_fit">Curve Fitting</div>
+      <a href="#leastsq" data-sec="leastsq"><span class="dot"></span><span data-i18n="nav_ls">Least-Squares Fitting</span></a>
+      <div class="nav-group" data-i18n="grp_interp">Interpolation</div>
+      <a href="#interp" data-sec="interp"><span class="dot"></span><span data-i18n="nav_ip">Polynomial Interpolation</span></a>
+      <div class="nav-group" data-i18n="grp_integ">Integration</div>
+      <a href="#integ" data-sec="integ"><span class="dot"></span><span data-i18n="nav_num">Trapezoidal &amp; Simpson</span></a>
+      <div class="nav-group" data-i18n="grp_ode">Differential Equations</div>
+      <a href="#ode" data-sec="ode"><span class="dot"></span><span data-i18n="nav_ode">Euler &amp; Runge-Kutta</span></a>
+      <div class="nav-group" data-i18n="grp_ref">Reference</div>
+      <a href="#compare" data-sec="compare"><span class="dot"></span><span data-i18n="nav_compare">Comparison Table</span></a>
+      <a href="#practice" data-sec="practice"><span class="dot"></span><span data-i18n="nav_practice">Practice Problems</span></a>
+      <a href="#checklist" data-sec="checklist"><span class="dot"></span><span data-i18n="nav_checklist">Exam Checklist</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">◐ <span data-i18n="theme_light">Light mode</span></button>
+    </div>
+
+    <header class="hero" data-search="overview">
+      <div class="eyebrow" data-i18n="hero_eyebrow">Numerical Techniques</div>
+      <h2 data-i18n="hero_h2">Everything for Monday, in one place.</h2>
+      <p class="lead" data-i18n="hero_lead">A searchable refresher on the five core methods — root-finding and linear systems — each with the idea, the formula, the traps that cost marks, and a fully worked example. Practice problems with step-by-step solutions live at the end.</p>
+      <span class="exam-chip" data-i18n="hero_chip">▲ Final exam — Monday</span>
+    </header>
+
+    <!-- BISECTION -->
+    <section id="bisection" data-search="bisection root finding interval midpoint sign change bracket converge linear تنصيف جذور">
+      <span class="sec-num" data-i18n="b_cat">01 · Root-Finding</span>
+      <h3 data-i18n="b_title">Bisection Method</h3>
+      <div data-i18n="b_body">
+        <div class="idea"><span class="label">The idea</span><p>If <strong>f(a)</strong> and <strong>f(b)</strong> have opposite signs and f is continuous, a root lies in <strong>[a, b]</strong>. Repeatedly halve the interval and keep the half that still brackets the root.</p></div>
+        <p><strong>Each iteration:</strong></p>
+        <ol>
+          <li>Midpoint <strong>c = (a + b) / 2</strong></li>
+          <li>Evaluate <strong>f(c)</strong></li>
+          <li>If f(a)·f(c) &lt; 0 → root in [a, c], set <strong>b = c</strong>. Else → root in [c, b], set <strong>a = c</strong>.</li>
+          <li>Repeat until the interval is small enough.</li>
+        </ol>
+        <p><strong>Key facts</strong></p>
+        <ul>
+          <li><strong>Always converges</strong> from a valid bracket — but slowly (linear).</li>
+          <li>Error after n steps ≤ <strong>(b − a) / 2ⁿ</strong>.</li>
+          <li>Iterations for tolerance ε:&nbsp; <strong>n ≥ log₂((b − a) / ε)</strong>.</li>
+        </ul>
+        <div class="trap"><span class="label">Exam traps</span><ul><li>You MUST start with a sign change: f(a)·f(b) &lt; 0.</li><li>Compute the new midpoint from the <em>updated</em> a and b.</li></ul></div>
+        <p><strong>Worked example</strong> — root of f(x) = x³ − x − 2 on [1, 2]. &nbsp; f(1) = −2, f(2) = 4 → sign change ✓</p>
+      </div>
+      <div class="t-wrap"><table>
+        <tr><th>Iter</th><th>a</th><th>b</th><th>c=(a+b)/2</th><th>f(c)</th><th>New interval</th></tr>
+        <tr><td>1</td><td>1.0</td><td>2.0</td><td>1.5</td><td>−0.125</td><td>[1.5, 2.0]</td></tr>
+        <tr><td>2</td><td>1.5</td><td>2.0</td><td>1.75</td><td>+1.609</td><td>[1.5, 1.75]</td></tr>
+        <tr><td>3</td><td>1.5</td><td>1.75</td><td>1.625</td><td>+0.666</td><td>[1.5, 1.625]</td></tr>
+        <tr><td>4</td><td>1.5</td><td>1.625</td><td>1.5625</td><td>+0.252</td><td>[1.5, 1.5625]</td></tr>
+      </table></div>
+      <p data-i18n="b_after">Approaching the true root ≈ <strong>1.5214</strong>.</p>
+    </section>
+
+    <!-- NEWTON -->
+    <section id="newton" data-search="newton raphson tangent derivative quadratic convergence fast diverge نيوتن مماس مشتقة">
+      <span class="sec-num" data-i18n="n_cat">02 · Root-Finding</span>
+      <h3 data-i18n="n_title">Newton-Raphson Method</h3>
+      <div data-i18n="n_body">
+        <div class="idea"><span class="label">The idea</span><p>Use the tangent line at the current guess to jump to a better one. Very fast when it works.</p></div>
+      </div>
+      <div class="formula"><span class="hl">x</span>ₙ₊₁ = xₙ − f(xₙ) / f′(xₙ)</div>
+      <div data-i18n="n_body2">
+        <p><strong>Key facts</strong></p>
+        <ul>
+          <li><strong>Quadratic convergence</strong> — roughly doubles correct digits each step near the root.</li>
+          <li>Needs the derivative f′(x).</li>
+          <li>Can <strong>fail or diverge</strong> if f′(xₙ) ≈ 0 or the start guess is poor.</li>
+        </ul>
+        <div class="trap"><span class="label">Exam traps</span><ul><li>Write f′(x) symbolically before plugging in numbers.</li><li>Carry enough decimals — precision is the whole point.</li></ul></div>
+        <p><strong>Worked example</strong> — f(x) = x³ − x − 2, so f′(x) = 3x² − 1. Start x₀ = 1.5.</p>
+      </div>
+      <div class="formula">x₁ = 1.5 − (−0.125)/(5.75) = <span class="hl">1.521739</span>
+x₂ = 1.521739 − (0.002214)/(5.947068) = <span class="hl">1.521367</span></div>
+      <p data-i18n="n_after">Two steps from a rough guess → 4-decimal accuracy (true root ≈ 1.521380).</p>
+    </section>
+
+    <!-- SECANT -->
+    <section id="secant" data-search="secant no derivative two points slope approximate قاطع">
+      <span class="sec-num" data-i18n="s_cat">03 · Root-Finding</span>
+      <h3 data-i18n="s_title">Secant Method</h3>
+      <div data-i18n="s_body">
+        <div class="idea"><span class="label">The idea</span><p>Like Newton-Raphson, but approximate the derivative using two previous points — so you need <strong>no</strong> f′(x).</p></div>
+      </div>
+      <div class="formula"><span class="hl">x</span>ₙ₊₁ = xₙ − f(xₙ)·(xₙ − xₙ₋₁) / (f(xₙ) − f(xₙ₋₁))</div>
+      <p data-i18n="s_after">Needs <strong>two</strong> starting points. Converges almost as fast as Newton (order ≈ 1.618), with no derivative required.</p>
+    </section>
+
+    <!-- GAUSS -->
+    <section id="fixedpoint" data-search="fixed point iteration g(x) convergence condition rearrange نقطة ثابتة تكرار تقارب">
+      <span class="sec-num" data-i18n="fp_cat"></span>
+      <h3 data-i18n="fp_title"></h3>
+      <div data-i18n="fp_body"></div>
+      <div class="formula"><span class="hl">x</span>ₙ₊₁ = g(xₙ)        converges near a root if  |g′(x)| &lt; 1</div>
+      <div data-i18n="fp_ex"></div>
+      <div class="formula">x³ − 7x + 1 = 0   →   rearrange as   x = g(x) = (x³ + 1) / 7</div>
+      <div class="t-wrap"><table>
+        <tr><th>n</th><th>xₙ</th><th>g(xₙ) = (xₙ³+1)/7</th></tr>
+        <tr><td>0</td><td>0</td><td>0.142857</td></tr>
+        <tr><td>1</td><td>0.142857</td><td>0.143274</td></tr>
+        <tr><td>2</td><td>0.143274</td><td>0.143277</td></tr>
+        <tr><td>3</td><td>0.143277</td><td>0.143277</td></tr>
+      </table></div>
+      <div data-i18n="fp_after"></div>
+    </section>
+
+    <section id="gauss" data-search="gaussian elimination augmented matrix forward back substitution partial pivoting upper triangular الحذف الجاوسي مصفوفة">
+      <span class="sec-num" data-i18n="g_cat">04 · Linear Systems · Direct</span>
+      <h3 data-i18n="g_title">Gaussian Elimination</h3>
+      <div data-i18n="g_body">
+        <div class="idea"><span class="label">The idea</span><p>Use row operations to make the augmented matrix upper-triangular (forward elimination), then solve bottom-up (back substitution).</p></div>
+        <p><strong>Worked example</strong></p>
+      </div>
+      <div class="formula">2x +  y −  z =   8
+−3x −  y + 2z = −11
+−2x +  y + 2z =  −3</div>
+      <p data-i18n="g_mid">Augmented matrix → clear column 1, then column 2:</p>
+      <div class="matrix">[ 2   1   −1  |  8 ]
+[ 0  0.5  0.5 |  1 ]
+[ 0   0   −1  |  1 ]   →  −z = 1</div>
+      <div data-i18n="g_back">
+        <p><strong>Back substitution:</strong> −z = 1 → <strong>z = −1</strong>; &nbsp; 0.5y + 0.5(−1) = 1 → <strong>y = 3</strong>; &nbsp; 2x + 3 − (−1) = 8 → <strong>x = 2</strong>.</p>
+      </div>
+      <div class="formula">Solution: (x, y, z) = (<span class="hl">2, 3, −1</span>)</div>
+      <div data-i18n="g_trap">
+        <div class="trap"><span class="label">Exam traps</span><ul><li><strong>Partial pivoting:</strong> if a pivot is 0 or tiny, swap rows so the largest-magnitude entry becomes the pivot — avoids dividing by ~0 and cuts rounding error.</li><li>Apply each row operation across the <em>whole</em> row, including the right-hand side.</li></ul></div>
+      </div>
+    </section>
+
+    <!-- JACOBI -->
+    <section id="inverse" data-search="inverse matrix method determinant adjugate A inverse b solve direct معكوس المصفوفة محدد">
+      <span class="sec-num" data-i18n="inv_cat"></span>
+      <h3 data-i18n="inv_title"></h3>
+      <div data-i18n="inv_body"></div>
+      <div class="formula">A·x = b      →      <span class="hl">x = A⁻¹ · b</span>      (only if det A ≠ 0)</div>
+      <div data-i18n="inv_ex"></div>
+      <div class="formula">⎡ 3  −1   2 ⎤        ⎡ −0.5714   0.7143   1 ⎤
+⎢ 1   2   3 ⎥   A⁻¹ = ⎢ −1        1        1 ⎥     det A = −7
+⎣ 2  −2  −1 ⎦        ⎣  0.8571  −0.5714  −1 ⎦</div>
+      <div class="formula">x = A⁻¹·b = A⁻¹·(12, 11, 2)ᵀ = (<span class="hl">3, 1, 2</span>)</div>
+      <div data-i18n="inv_after"></div>
+    </section>
+
+    <section id="jacobi" data-search="jacobi iteration simultaneous diagonal dominance previous values جاكوبي تكرار قطري">
+      <span class="sec-num" data-i18n="j_cat">05 · Linear Systems · Iterative</span>
+      <h3 data-i18n="j_title">Jacobi Iteration</h3>
+      <div data-i18n="j_body">
+        <div class="idea"><span class="label">The idea</span><p>Solve each equation for its diagonal variable, then update <strong>all</strong> variables at once using values from the <em>previous</em> iteration only.</p></div>
+        <p><strong>Convergence:</strong> guaranteed if the matrix is <strong>diagonally dominant</strong> (each |diagonal| ≥ sum of |other entries in that row|). Always state this.</p>
+      </div>
+      <div class="formula">4x −  y +  z =   7        x = (7 + y − z) / 4
+4x − 8y +  z = −21   ⟹   y = (21 + 4x + z) / 8
+−2x +  y + 5z =  15       z = (15 + 2x − y) / 5</div>
+      <p data-i18n="j_mid">Start (0, 0, 0) — all right-hand sides use old values:</p>
+      <div class="t-wrap"><table>
+        <tr><th>Iter</th><th>x</th><th>y</th><th>z</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>1</td><td>1.7500</td><td>2.6250</td><td>3.0000</td></tr>
+        <tr><td>2</td><td>1.6563</td><td>3.8750</td><td>3.1750</td></tr>
+      </table></div>
+      <p data-i18n="j_after">Converging toward the true solution <strong>(2, 4, 3)</strong>.</p>
+    </section>
+
+    <!-- SEIDEL -->
+    <section id="seidel" data-search="gauss seidel fresh new values immediately faster convergence جاوس زايدل">
+      <span class="sec-num" data-i18n="gs_cat">06 · Linear Systems · Iterative</span>
+      <h3 data-i18n="gs_title">Gauss-Seidel Iteration</h3>
+      <div data-i18n="gs_body">
+        <div class="idea"><span class="label">The idea</span><p>Same as Jacobi, but use <strong>new values as soon as they're available</strong> within the same iteration. Usually converges faster.</p></div>
+        <p>Same system, starting (0, 0, 0):</p>
+      </div>
+      <div class="formula">x = (7 + y − z)/4      ← uses latest y, z
+y = (21 + 4x + z)/8    ← uses the x just computed
+z = (15 + 2x − y)/5    ← uses the new x and y</div>
+      <div class="t-wrap"><table>
+        <tr><th>Iter</th><th>x</th><th>y</th><th>z</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>1</td><td>1.7500</td><td>3.5000</td><td>3.0000</td></tr>
+        <tr><td>2</td><td>1.8750</td><td>3.9375</td><td>2.9625</td></tr>
+      </table></div>
+      <div data-i18n="gs_after">
+        <p>After 2 iterations it's already closer to <strong>(2, 4, 3)</strong> than Jacobi.</p>
+        <div class="idea" style="border-left-color:var(--accent-2)"><span class="label" style="color:var(--accent-2)">Say this on the exam</span><p>Jacobi updates everything at once from the previous step; Gauss-Seidel plugs in each new value immediately, so later variables in the same sweep already benefit from updated earlier ones.</p></div>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section id="errbound" data-search="error truncation upper bound iteration matrix norm stopping estimate خطأ حد علوي بتر">
+      <span class="sec-num" data-i18n="err_cat"></span>
+      <h3 data-i18n="err_title"></h3>
+      <div data-i18n="err_body"></div>
+      <div class="formula">‖x* − x⁽ᵏ⁾‖ ≤ ( ‖T‖ / (1 − ‖T‖) ) · ‖x⁽ᵏ⁾ − x⁽ᵏ⁻¹⁾‖      (needs ‖T‖ &lt; 1)
+
+‖T‖ = max row sum of | aᵢⱼ / aᵢᵢ |   (off-diagonal entries)</div>
+      <div data-i18n="err_after"></div>
+    </section>
+
+    <section id="leastsq" data-search="least squares curve fitting straight line polynomial normal equations regression المربعات الصغرى انحدار">
+      <span class="sec-num" data-i18n="ls_cat"></span>
+      <h3 data-i18n="ls_title"></h3>
+      <div data-i18n="ls_body"></div>
+      <div class="formula">Line y = a + b·x:
+   b = ( nΣxy − Σx·Σy ) / ( nΣx² − (Σx)² )
+   a = ( Σy − b·Σx ) / n</div>
+      <div data-i18n="ls_ex"></div>
+      <div class="t-wrap"><table>
+        <tr><th>x</th><th>y</th><th>x·y</th><th>x²</th></tr>
+        <tr><td>−1</td><td>4</td><td>−4</td><td>1</td></tr>
+        <tr><td>−3</td><td>5</td><td>−15</td><td>9</td></tr>
+        <tr><td>4</td><td>7</td><td>28</td><td>16</td></tr>
+        <tr><td>5</td><td>14</td><td>70</td><td>25</td></tr>
+        <tr><td>6</td><td>12</td><td>72</td><td>36</td></tr>
+        <tr><td>Σ = 11</td><td>Σ = 42</td><td>Σ = 151</td><td>Σ = 87</td></tr>
+      </table></div>
+      <div class="formula">b = (5·151 − 11·42)/(5·87 − 11²) = 293/314 = 0.9331
+a = (42 − 0.9331·11)/5 = 6.347
+        →   <span class="hl">y = 6.347 + 0.933·x</span></div>
+      <div data-i18n="ls_after"></div>
+    </section>
+
+    <section id="interp" data-search="interpolation lagrange newton divided differences polynomial through points accuracy استيفاء كثير حدود فروق">
+      <span class="sec-num" data-i18n="ip_cat"></span>
+      <h3 data-i18n="ip_title"></h3>
+      <div data-i18n="ip_body"></div>
+      <div class="formula">Newton's divided differences:
+P(x) = f[x₀] + f[x₀,x₁](x−x₀) + f[x₀,x₁,x₂](x−x₀)(x−x₁) + …
+
+f[xᵢ,xⱼ] = ( f(xⱼ) − f(xᵢ) ) / ( xⱼ − xᵢ )</div>
+      <div data-i18n="ip_ex"></div>
+      <div class="formula">x:  −4   −1    0    1    3    4
+y: −166   8    6    4   72  178
+
+interpolating polynomial simplifies to →  P(x) = 3x³ − 5x + 6
+P(−3) = 3(−27) − 5(−3) + 6 = <span class="hl">−60</span></div>
+      <div data-i18n="ip_after"></div>
+    </section>
+
+    <section id="integ" data-search="numerical integration trapezoidal simpson rule composite error h interval تكامل عددي شبه منحرف سيمبسون">
+      <span class="sec-num" data-i18n="num_cat"></span>
+      <h3 data-i18n="num_title"></h3>
+      <div data-i18n="num_body"></div>
+      <div class="formula">h = (b − a) / n
+
+Trapezoidal:  ∫ ≈ (h/2)[ f₀ + 2(f₁+f₂+…+fₙ₋₁) + fₙ ]
+Simpson 1/3:  ∫ ≈ (h/3)[ f₀ + fₙ + 4(odd f) + 2(even interior f) ]   (n even)</div>
+      <div data-i18n="num_ex"></div>
+      <div class="t-wrap"><table>
+        <tr><th>x</th><th>0</th><th>.25</th><th>.5</th><th>.75</th><th>1</th><th>1.25</th><th>1.5</th><th>1.75</th><th>2</th></tr>
+        <tr><th>f</th><td>15</td><td>21</td><td>26</td><td>28</td><td>30</td><td>27</td><td>25</td><td>22</td><td>20</td></tr>
+      </table></div>
+      <div class="formula">Trapezoidal = (0.25/2)[15 + 2(21+26+28+30+27+25+22) + 20] = <span class="hl">49.125</span>
+Simpson     = (0.25/3)[15 + 20 + 4(21+28+27+22) + 2(26+30+25)] = <span class="hl">49.0833</span></div>
+      <div data-i18n="num_after"></div>
+    </section>
+
+    <section id="ode" data-search="differential equation initial value euler improved heun runge kutta rk2 step slope معادلة تفاضلية أويلر رنج كوتا">
+      <span class="sec-num" data-i18n="ode_cat"></span>
+      <h3 data-i18n="ode_title"></h3>
+      <div data-i18n="ode_body"></div>
+      <div class="formula">Euler-1 (forward):   yₙ₊₁ = yₙ + h·f(xₙ, yₙ)
+
+Euler-2 (improved / Heun):
+   predictor  ỹ  = yₙ + h·f(xₙ, yₙ)
+   corrector  yₙ₊₁ = yₙ + (h/2)[ f(xₙ,yₙ) + f(xₙ₊₁, ỹ) ]
+
+Runge-Kutta 2:  k₁ = h·f(xₙ,yₙ),  k₂ = h·f(xₙ+h, yₙ+k₁)
+                yₙ₊₁ = yₙ + ½(k₁ + k₂)</div>
+      <div data-i18n="ode_ex"></div>
+      <div class="formula">y′ = 3x + y²,  y(1) = 1.2,  h = 0.025  →  find y(1.1)  (4 steps)
+
+step 1: y = 1.2 + 0.025·(3·1 + 1.2²) = 1.2 + 0.025·4.44 = 1.3110
+… continue to x = 1.1  →  <span class="hl">y(1.1) ≈ 1.7023</span></div>
+      <div data-i18n="ode_after"></div>
+    </section>
+
+    <section id="compare" data-search="comparison table summary speed converge which method مقارنة">
+      <span class="sec-num" data-i18n="c_cat">07 · Reference</span>
+      <h3 data-i18n="c_title">Method Comparison</h3>
+      <div class="t-wrap" data-i18n="c_table"><table>
+        <tr><th>Method</th><th>Type</th><th>Needs</th><th>Speed</th><th>Always works?</th></tr>
+        <tr><td>Bisection</td><td>Root-find</td><td>Sign-change bracket</td><td>Slow (linear)</td><td>Yes, if bracketed</td></tr>
+        <tr><td>Newton-Raphson</td><td>Root-find</td><td>f′(x), one guess</td><td>Fast (quadratic)</td><td>No — can diverge</td></tr>
+        <tr><td>Secant</td><td>Root-find</td><td>Two guesses</td><td>Fast (~1.6)</td><td>No</td></tr>
+        <tr><td>Gaussian elim.</td><td>Direct</td><td>The matrix</td><td>Finite steps</td><td>Yes (w/ pivoting)</td></tr>
+        <tr><td>Jacobi</td><td>Iterative</td><td>Diag. dominance</td><td>Slower</td><td>If diag. dominant</td></tr>
+        <tr><td>Gauss-Seidel</td><td>Iterative</td><td>Diag. dominance</td><td>Faster than Jacobi</td><td>If diag. dominant</td></tr>
+      </table></div>
+    </section>
+
+    <!-- PRACTICE -->
+    <section id="practice" data-search="practice problems exercises solutions difficulty easy medium hard تدريب مسائل">
+      <span class="sec-num" data-i18n="p_cat">08 · Reference</span>
+      <h3 data-i18n="p_title">Practice Problems</h3>
+      <p data-i18n="p_intro">Try each cold, then reveal the worked solution. Filter by difficulty:</p>
+
+      <div class="diff-bar" id="diffBar">
+        <button class="on" data-f="all" onclick="setDiff('all')" data-i18n="f_all">All (15)</button>
+        <button data-f="easy" onclick="setDiff('easy')" data-i18n="f_easy">Easy</button>
+        <button data-f="med" onclick="setDiff('med')" data-i18n="f_med">Medium</button>
+        <button data-f="hard" onclick="setDiff('hard')" data-i18n="f_hard">Hard</button>
+      </div>
+
+      <div class="plist" id="plist" data-filter="all">
+
+        <!-- Bisection -->
+        <div class="problem" data-diff="easy">
+          <div class="p-head"><span class="p-id">P1</span><span class="p-topic" data-i18n="t_bisection">Bisection</span><span class="badge easy" data-i18n="b_easy">Easy</span></div>
+          <p data-i18n="p1_q">Do 2 iterations of bisection for f(x) = x² − 2 on [1, 2]. Give the final interval.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p1_a"><p>f(1) = −1, f(2) = 2.</p><p>c₁ = 1.5 → f = +0.25 → [1, 1.5]. &nbsp; c₂ = 1.25 → f = −0.4375 → <strong>[1.25, 1.5]</strong> (true √2 ≈ 1.414).</p></div></div>
+        </div>
+
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P2</span><span class="p-topic" data-i18n="t_bisection">Bisection</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p2_q">How many bisection iterations are needed to locate a root in [2, 3] to within tolerance ε = 0.001?</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p2_a"><p>n ≥ log₂((b − a)/ε) = log₂(1/0.001) = log₂(1000) = 9.97 → <strong>n = 10 iterations</strong>.</p></div></div>
+        </div>
+
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P3</span><span class="p-topic" data-i18n="t_bisection">Bisection</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p3_q">f(x) = x³ − 4x + 1 has a root in [0, 1]. Do 3 iterations; state the bracket.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p3_a"><p>f(0) = 1, f(1) = −2.</p><p>c₁ = 0.5 → −0.875 → [0, 0.5]. &nbsp; c₂ = 0.25 → +0.0156 → [0.25, 0.5]. &nbsp; c₃ = 0.375 → −0.447 → <strong>[0.25, 0.375]</strong> (true root ≈ 0.254).</p></div></div>
+        </div>
+
+        <!-- Newton -->
+        <div class="problem" data-diff="easy">
+          <div class="p-head"><span class="p-id">P4</span><span class="p-topic" data-i18n="t_newton">Newton-Raphson</span><span class="badge easy" data-i18n="b_easy">Easy</span></div>
+          <p data-i18n="p4_q">For f(x) = x² − 2, start x₀ = 1.5. Compute x₁.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p4_a"><p>f′(x) = 2x. &nbsp; x₁ = 1.5 − (0.25)/(3) = <strong>1.41667</strong> (true √2 ≈ 1.41421).</p></div></div>
+        </div>
+
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P5</span><span class="p-topic" data-i18n="t_newton">Newton-Raphson</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p5_q">For f(x) = x³ − 10, start x₀ = 2. Compute x₁ and x₂.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p5_a"><p>f′(x) = 3x².</p></div>
+            <div class="formula">x₁ = 2 − (−2)/12 = <span class="hl">2.16667</span>
+x₂ = 2.16667 − (0.1741)/(14.0833) = <span class="hl">2.15431</span></div>
+            <div data-i18n="p5_b"><p>True ∛10 ≈ 2.15443.</p></div>
+          </div>
+        </div>
+
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P6</span><span class="p-topic" data-i18n="t_newton">Newton-Raphson</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p6_q">For f(x) = x·eˣ − 1, start x₀ = 0.5. Compute x₁ and x₂.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p6_a"><p>f′(x) = eˣ(1 + x).</p></div>
+            <div class="formula">f(0.5) = −0.175639,  f′(0.5) = 2.473081
+x₁ = 0.5 + 0.071019 = <span class="hl">0.571019</span>
+f(0.571019) = 0.010783,  f′ = 2.780993
+x₂ = 0.571019 − 0.003878 = <span class="hl">0.567141</span></div>
+            <div data-i18n="p6_b"><p>True root ≈ 0.567143 (the omega constant).</p></div>
+          </div>
+        </div>
+
+        <!-- Secant -->
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P7</span><span class="p-topic" data-i18n="t_secant">Secant</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p7_q">For f(x) = x² − 2 with x₀ = 1, x₁ = 2, compute x₂ and x₃.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p7_a"></div>
+            <div class="formula">x₂ = 2 − (2)(2−1)/(2−(−1)) = <span class="hl">1.33333</span>
+x₃ = 1.33333 − (−0.22222)(−0.66667)/(−2.22222) = <span class="hl">1.40000</span></div>
+            <div data-i18n="p7_b"><p>Converging to √2 ≈ 1.41421.</p></div>
+          </div>
+        </div>
+
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P8</span><span class="p-topic" data-i18n="t_secant">Secant</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p8_q">For f(x) = cos(x) − x with x₀ = 0, x₁ = 1 (radians), compute x₂ and x₃.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p8_a"><p>f(0) = 1, f(1) = −0.459698.</p></div>
+            <div class="formula">x₂ = 1 − (−0.459698)(1)/(−1.459698) = <span class="hl">0.685073</span>
+x₃ = 0.685073 + 0.051308 = <span class="hl">0.736381</span></div>
+            <div data-i18n="p8_b"><p>True root ≈ 0.739085.</p></div>
+          </div>
+        </div>
+
+        <!-- Gaussian -->
+        <div class="problem" data-diff="easy">
+          <div class="p-head"><span class="p-id">P9</span><span class="p-topic" data-i18n="t_gauss">Gaussian Elim.</span><span class="badge easy" data-i18n="b_easy">Easy</span></div>
+          <p data-i18n="p9_q">Solve by elimination: &nbsp; x + y = 5, &nbsp; 2x − y = 1.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p9_a"><p>R2 − 2R1 → −3y = −9 → <strong>y = 3</strong>; &nbsp; x + 3 = 5 → <strong>x = 2</strong>. &nbsp; (2, 3).</p></div></div>
+        </div>
+
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P10</span><span class="p-topic" data-i18n="t_gauss">Gaussian Elim.</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p10_q">Solve:</p>
+          <div class="formula"> x +  y +  z = 2
+2x −  y +  z = 2
+ x + 2y − 3z = 7</div>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div class="matrix">R2−2R1 → [0 −3 −1 | −2]
+R3−R1  → [0  1 −4 |  5]
+R3+⅓R2 → [0  0 −4.333 | 4.333] → z = −1</div>
+            <div data-i18n="p10_a"><p>Back-sub: −3y − (−1) = −2 → <strong>y = 1</strong>; &nbsp; x + 1 − 1 = 2 → <strong>x = 2</strong>. &nbsp; <strong>(2, 1, −1)</strong>.</p></div>
+          </div>
+        </div>
+
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P11</span><span class="p-topic" data-i18n="t_gauss">Gaussian Elim.</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p11_q">Solve (note the zero pivot — you must use partial pivoting):</p>
+          <div class="formula">0x +  y + 2z = 4
+2x + 2y +  z = 7
+ x −  y + 3z = 2</div>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p11_a"><p>Pivot (1,1) = 0 → swap R1 ↔ R2:</p></div>
+            <div class="matrix">[2  2  1 | 7]
+[0  1  2 | 4]
+[1 −1  3 | 2]
+R3−½R1 → [0 −2 2.5 | −1.5]
+R3+2R2 → [0  0 6.5 | 6.5] → z = 1</div>
+            <div data-i18n="p11_b"><p>Back-sub: y + 2(1) = 4 → <strong>y = 2</strong>; &nbsp; 2x + 4 + 1 = 7 → <strong>x = 1</strong>. &nbsp; <strong>(1, 2, 1)</strong>.</p></div>
+          </div>
+        </div>
+
+        <!-- Jacobi -->
+        <div class="problem" data-diff="easy">
+          <div class="p-head"><span class="p-id">P12</span><span class="p-topic" data-i18n="t_jacobi">Jacobi</span><span class="badge easy" data-i18n="b_easy">Easy</span></div>
+          <p data-i18n="p12_q">Two Jacobi iterations from (0,0) for: &nbsp; 5x + y = 6, &nbsp; x + 4y = 5.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p12_a"><p>x = (6 − y)/5, y = (5 − x)/4.</p><p>Iter 1: (1.20, 1.25). &nbsp; Iter 2: x = (6−1.25)/5 = 0.95, y = (5−1.20)/4 = 0.95 → <strong>(0.95, 0.95)</strong>, true (1, 1).</p></div></div>
+        </div>
+
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P13</span><span class="p-topic" data-i18n="t_jacobi">Jacobi</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p13_q">Three Jacobi iterations from (0,0,0) for: &nbsp; 10x+y+z=12, &nbsp; x+10y+z=12, &nbsp; x+y+10z=12.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p13_a"><p>Each: x = (12 − y − z)/10, etc. (symmetric).</p></div>
+            <div class="t-wrap"><table><tr><th>Iter</th><th>x = y = z</th></tr><tr><td>1</td><td>1.200</td></tr><tr><td>2</td><td>0.960</td></tr><tr><td>3</td><td>1.008</td></tr></table></div>
+            <div data-i18n="p13_b"><p>Converging to <strong>(1, 1, 1)</strong>.</p></div>
+          </div>
+        </div>
+
+        <!-- Gauss-Seidel -->
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P14</span><span class="p-topic" data-i18n="t_seidel">Gauss-Seidel</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p14_q">Two Gauss-Seidel iterations from (0,0) for: &nbsp; 5x + y = 6, &nbsp; x + 4y = 5. Compare with P12.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p14_a"><p>Iter 1: x = 6/5 = 1.20, y = (5−1.20)/4 = 0.95.</p><p>Iter 2: x = (6−0.95)/5 = 1.01, y = (5−1.01)/4 = 0.9975 → <strong>(1.01, 0.9975)</strong> — closer than Jacobi after the same 2 steps.</p></div></div>
+        </div>
+
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P15</span><span class="p-topic" data-i18n="t_seidel">Gauss-Seidel</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p15_q">Two Gauss-Seidel iterations from (0,0,0) for: &nbsp; 8x+y−z=18, &nbsp; x+5y+z=18, &nbsp; 2x−y+6z=7.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span><div data-i18n="p15_a"><p>x = (18−y+z)/8, y = (18−x−z)/5, z = (7−2x+y)/6.</p></div>
+            <div class="t-wrap"><table><tr><th>Iter</th><th>x</th><th>y</th><th>z</th></tr><tr><td>1</td><td>2.2500</td><td>3.1500</td><td>0.9417</td></tr><tr><td>2</td><td>1.9740</td><td>3.0169</td><td>1.0115</td></tr></table></div>
+            <div data-i18n="p15_b"><p>Converging to <strong>(2, 3, 1)</strong>.</p></div>
+          </div>
+        </div>
+
+        <!-- Inverse matrix -->
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P16</span><span class="p-topic" data-i18n="t_inv">Inverse Matrix</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p16_q">Solve by the inverse-matrix method: 3x₁ − x₂ + 2x₃ = 12, x₁ + 2x₂ + 3x₃ = 11, 2x₁ − 2x₂ − x₃ = 2.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p16_a"></div>
+            <div class="formula">det A = −7  →  invertible ✓
+x₁ = (−0.5714)(12) + (0.7143)(11) + (1)(2) = 3
+x₂ = (−1)(12) + (1)(11) + (1)(2) = 1
+x₃ = (0.8571)(12) + (−0.5714)(11) + (−1)(2) = 2</div>
+            <div data-i18n="p16_b"></div>
+          </div>
+        </div>
+
+        <!-- Jacobi with reorder -->
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P17</span><span class="p-topic" data-i18n="t_jacobi">Jacobi</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p17_q">Use Jacobi (3 iterations) on 8x + y − z = 8, 2x + y + 9z = 12, x − 7y + 2z = −4. Reorder for dominance first.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p17_a"></div>
+            <div class="formula">x = (8 − y + z)/8 ,  y = (4 + x + 2z)/7 ,  z = (12 − 2x − y)/9</div>
+            <div class="t-wrap"><table><tr><th>n</th><th>x</th><th>y</th><th>z</th></tr><tr><td>1</td><td>1.0000</td><td>0.5714</td><td>1.3333</td></tr><tr><td>2</td><td>1.0952</td><td>1.0952</td><td>1.0476</td></tr><tr><td>3</td><td>0.9940</td><td>1.0272</td><td>0.9683</td></tr></table></div>
+            <div data-i18n="p17_b"></div>
+          </div>
+        </div>
+
+        <!-- Fixed-point -->
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P18</span><span class="p-topic" data-i18n="t_fp">Fixed-Point</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p18_q">Use fixed-point iteration to find the smallest positive root of x³ − 7x + 1 = 0 (2 d.p.).</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p18_a"></div>
+            <div class="formula">g(x) = (x³ + 1)/7 ,  x₀ = 0
+x₁ = 0.1429 ,  x₂ = 0.14327 ,  x₃ = 0.14328</div>
+            <div data-i18n="p18_b"></div>
+          </div>
+        </div>
+
+        <!-- Least squares -->
+        <div class="problem" data-diff="easy">
+          <div class="p-head"><span class="p-id">P19</span><span class="p-topic" data-i18n="t_ls">Least Squares</span><span class="badge easy" data-i18n="b_easy">Easy</span></div>
+          <p data-i18n="p19_q">Fit a straight line y = a + bx to (−1,4) (−3,5) (4,7) (5,14) (6,12).</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p19_a"></div>
+            <div class="formula">n=5, Σx=11, Σy=42, Σxy=151, Σx²=87
+b = (5·151 − 11·42)/(5·87 − 121) = 293/314 = 0.933
+a = (42 − 0.933·11)/5 = 6.347   →   y = 6.347 + 0.933x</div>
+            <div data-i18n="p19_b"></div>
+          </div>
+        </div>
+
+        <!-- Interpolation -->
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P20</span><span class="p-topic" data-i18n="t_ip">Interpolation</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p20_q">Interpolate (−4,−166) (−1,8) (0,6) (1,4) (3,72) (4,178) and estimate y(−3).</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p20_a"></div>
+            <div class="formula">interpolating polynomial → P(x) = 3x³ − 5x + 6
+y(−3) = 3(−27) − 5(−3) + 6 = −81 + 15 + 6 = −60</div>
+            <div data-i18n="p20_b"></div>
+          </div>
+        </div>
+
+        <!-- Integration -->
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P21</span><span class="p-topic" data-i18n="t_num">Integration</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p21_q">Estimate ∫₀² f dx by Trapezoidal and Simpson from the 9 values (h = 0.25): 15, 21, 26, 28, 30, 27, 25, 22, 20.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p21_a"></div>
+            <div class="formula">Trapezoidal = (0.25/2)[15 + 2(21+26+28+30+27+25+22) + 20]
+            = 0.125 × 393 = 49.125
+Simpson = (0.25/3)[15 + 20 + 4(21+28+27+22) + 2(26+30+25)]
+        = (0.25/3) × 589 = 49.083</div>
+            <div data-i18n="p21_b"></div>
+          </div>
+        </div>
+
+        <!-- Euler-1 -->
+        <div class="problem" data-diff="med">
+          <div class="p-head"><span class="p-id">P22</span><span class="p-topic" data-i18n="t_ode">ODE / IVP</span><span class="badge med" data-i18n="b_med">Medium</span></div>
+          <p data-i18n="p22_q">Use Euler-1 to find y(1.1) for y′ = 3x + y², y(1) = 1.2, h = 0.025.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p22_a"></div>
+            <div class="t-wrap"><table><tr><th>step</th><th>x</th><th>y</th><th>f = 3x + y²</th></tr><tr><td>0</td><td>1.000</td><td>1.2000</td><td>4.4400</td></tr><tr><td>1</td><td>1.025</td><td>1.3110</td><td>4.7937</td></tr><tr><td>2</td><td>1.050</td><td>1.4308</td><td>5.1973</td></tr><tr><td>3</td><td>1.075</td><td>1.5608</td><td>5.6610</td></tr><tr><td>4</td><td>1.100</td><td>1.7023</td><td>—</td></tr></table></div>
+            <div data-i18n="p22_b"></div>
+          </div>
+        </div>
+
+        <!-- RK2 -->
+        <div class="problem" data-diff="hard">
+          <div class="p-head"><span class="p-id">P23</span><span class="p-topic" data-i18n="t_ode">ODE / IVP</span><span class="badge hard" data-i18n="b_hard">Hard</span></div>
+          <p data-i18n="p23_q">Use Runge-Kutta 2 to find y(2.3) for y′ = x² + y², y(2) = −1, h = 0.1.</p>
+          <button class="solve-btn" onclick="toggleSol(this)" data-i18n="btn_show">Show solution ↓</button>
+          <div class="solution"><span class="s-label" data-i18n="lbl_sol">Solution</span>
+            <div data-i18n="p23_a"></div>
+            <div class="t-wrap"><table><tr><th>step</th><th>x</th><th>y</th><th>k₁</th><th>k₂</th></tr><tr><td>1</td><td>2.0</td><td>−1.0000</td><td>0.5000</td><td>0.4660</td></tr><tr><td>2</td><td>2.1</td><td>−0.5170</td><td>0.4677</td><td>0.4842</td></tr><tr><td>3</td><td>2.2</td><td>−0.0410</td><td>0.4842</td><td>0.5486</td></tr><tr><td>—</td><td>2.3</td><td>0.4754</td><td></td><td></td></tr></table></div>
+            <div data-i18n="p23_b"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section id="checklist" data-search="checklist last minute reminders tips decimals pivoting مراجعة">
+      <span class="sec-num" data-i18n="ck_cat">09 · Reference</span>
+      <h3 data-i18n="ck_title">Last-Minute Checklist</h3>
+      <div data-i18n="ck_body">
+        <ul>
+          <li><strong>Bisection</strong> — confirm the sign change; midpoint from <em>current</em> a, b.</li>
+          <li><strong>Newton</strong> — write f′(x) first; watch for f′(xₙ) ≈ 0.</li>
+          <li><strong>Gaussian</strong> — use partial pivoting if a pivot is small/zero; operate on whole rows.</li>
+          <li><strong>Jacobi vs Gauss-Seidel</strong> — state diagonal dominance; Gauss-Seidel reuses fresh values immediately.</li>
+          <li><strong>Precision</strong> — carry 4–6 decimals in iterative work unless told otherwise.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="no-results hidden" id="noResults" data-i18n="no_res">No topics match that search.</div>
+    <footer><span data-i18n="footer">Good luck Monday, <span class="gl">Nour</span>. ▲ You've got this.</span></footer>
+  </div>
+</div>
+
+<script>
+/* ---------- translations ---------- */
+const dict={
+ en:{
+  kicker:"CVL · Numerical", brand_h1:"Final Exam<br>Study Guide", brand_sub:"5 methods · examples · practice",
+  search_ph:"Search every topic…",
+  grp_root:"Root-Finding", grp_direct:"Linear Systems · Direct", grp_iter:"Linear Systems · Iterative", grp_ref:"Reference",
+  nav_bisection:"Bisection Method", nav_newton:"Newton-Raphson", nav_secant:"Secant Method", nav_gauss:"Gaussian Elimination",
+  nav_jacobi:"Jacobi Iteration", nav_seidel:"Gauss-Seidel", nav_compare:"Comparison Table", nav_practice:"Practice Problems", nav_checklist:"Exam Checklist",
+  theme_light:"Light mode", theme_dark:"Dark mode",
+  hero_eyebrow:"Numerical Techniques", hero_h2:"Everything for Monday, in one place.",
+  hero_lead:"A searchable refresher on the five core methods — root-finding and linear systems — each with the idea, the formula, the traps that cost marks, and a fully worked example. Practice problems with step-by-step solutions live at the end.",
+  hero_chip:"▲ Final exam — Monday",
+  nav_fp:"Fixed-Point Iteration", nav_inv:"Inverse Matrix Method", nav_err:"Error / Truncation Bound",
+  nav_ls:"Least-Squares Fitting", nav_ip:"Polynomial Interpolation", nav_num:"Trapezoidal & Simpson", nav_ode:"Euler & Runge-Kutta",
+  grp_fit:"Curve Fitting", grp_interp:"Interpolation", grp_integ:"Integration", grp_ode:"Differential Equations",
+  fp_cat:"04 · Root-Finding", fp_title:"Fixed-Point Iteration",
+  fp_body:`<div class="idea"><span class="label">The idea</span><p>Rewrite the equation f(x) = 0 as <strong>x = g(x)</strong> (isolate an x on one side). Then just keep feeding your guess back in: xₙ₊₁ = g(xₙ). If it settles on a value, that value is the root.</p></div><p><strong>Convergence condition (important):</strong> the iteration converges only when <strong>|g′(x)| &lt; 1</strong> near the root. The same equation can be rearranged many ways — some converge, some blow up. Pick a g whose slope is shallow (|g′| &lt; 1).</p>`,
+  fp_ex:`<p><strong>Worked example</strong> — find the smallest positive root of x³ − 7x + 1 = 0. Isolate the lone x from the −7x term: 7x = x³ + 1, so g(x) = (x³ + 1)/7. Start from x₀ = 0:</p>`,
+  fp_after:`<p>It locks onto <strong>x ≈ 0.1433</strong> in just a few steps. Why so fast? g′(x) = 3x²/7, which at the root is about 0.009 — far below 1, so each step shrinks the error massively.</p>`,
+  inv_cat:"05 · Linear Systems · Direct", inv_title:"Inverse Matrix Method",
+  inv_body:`<div class="idea"><span class="label">The idea</span><p>Write the system as a matrix equation A·x = b. If A has an inverse, multiply both sides by A⁻¹ to get the answer in one shot: x = A⁻¹·b.</p></div><p><strong>How to get A⁻¹ (3×3):</strong> A⁻¹ = adj(A) / det(A) — the adjugate (transpose of the cofactor matrix) divided by the determinant. It only exists if <strong>det A ≠ 0</strong>.</p>`,
+  inv_ex:`<p><strong>Worked example</strong> — solve 3x₁ − x₂ + 2x₃ = 12, x₁ + 2x₂ + 3x₃ = 11, 2x₁ − 2x₂ − x₃ = 2. First det A = −7 (non-zero ✓), then build the inverse:</p>`,
+  inv_after:`<p>Multiplying A⁻¹ by b gives <strong>(x₁, x₂, x₃) = (3, 1, 2)</strong> — the same answer Gaussian elimination gives. <strong>When to use which:</strong> for a single system, Gaussian elimination is faster. The inverse pays off when you must solve A·x = b for <em>many</em> different b with the same A.</p>`,
+  err_cat:"08 · Linear Systems · Iterative", err_title:"Error / Truncation Bound",
+  err_body:`<div class="idea"><span class="label">The idea</span><p>After k iterations of Jacobi or Gauss-Seidel, how far might you still be from the true answer? You can bound it using how much the last step changed, scaled by the "size" of the iteration matrix T.</p></div><p>Write each iteration as x⁽ᵏ⁾ = T·x⁽ᵏ⁻¹⁾ + c. The norm ‖T‖ (largest row-sum of the off-diagonal coefficients divided by their diagonal) controls everything. If ‖T‖ &lt; 1 the method converges, and the leftover error obeys:</p>`,
+  err_after:`<p><strong>How to use it:</strong> compute ‖T‖ from the rearranged equations, take the difference between your last two iterates, and plug in. Smaller ‖T‖ (stronger diagonal dominance) → tighter bound and faster convergence. This is the "local truncation upper bound" the assignment asks for.</p>`,
+  ls_cat:"09 · Curve Fitting", ls_title:"Least-Squares Fitting",
+  ls_body:`<div class="idea"><span class="label">The idea</span><p>Data points rarely sit on a perfect line. Least squares finds the curve that makes the total of the squared vertical gaps (residuals) as small as possible — the "best fit". For a straight line you solve two "normal equations" for a and b.</p></div><p><strong>The recipe:</strong> build a table of x, y, x·y and x², add up each column, then plug the sums straight into the formulas.</p>`,
+  ls_ex:`<p><strong>Worked example</strong> — fit y = a + b·x to the five points (−1,4) (−3,5) (4,7) (5,14) (6,12). Build the sums:</p>`,
+  ls_after:`<p><strong>Other shapes use the same trick:</strong> to fit y = a + b·x², just substitute X = x² and run the identical line formula on (X, y). For y = a + b/x, substitute X = 1/x. For a 2nd-degree polynomial y = a + bx + cx², you set up three normal equations instead of two (using Σx³ and Σx⁴ as well).</p>`,
+  ip_cat:"10 · Interpolation", ip_title:"Polynomial Interpolation",
+  ip_body:`<div class="idea"><span class="label">The idea</span><p>Find the single polynomial that passes <em>exactly</em> through all the given points, then evaluate it wherever you like. With n+1 points you get a polynomial of degree at most n. Lagrange and Newton's divided differences both build the same polynomial — Newton's is easier to extend when you add points.</p></div>`,
+  ip_ex:`<p><strong>Worked example</strong> — interpolate the six points below and estimate y(−3). Building the divided-difference polynomial (the higher differences vanish here), it collapses to a tidy cubic:</p>`,
+  ip_after:`<p><strong>Accuracy:</strong> the leftover error looks like (next divided difference) × (x−x₀)(x−x₁)… So if a bound like |y⁽ⁿ⁾(x)| ≤ Mⁿ is given, the error shrinks as that bound and the spacing shrink. Interpolating <em>inside</em> the data range is reliable; far outside it (extrapolation) is risky.</p>`,
+  num_cat:"11 · Integration", num_title:"Trapezoidal & Simpson",
+  num_body:`<div class="idea"><span class="label">The idea</span><p>To approximate an area ∫f dx, slice [a, b] into n equal strips of width h and add up the strip areas. Trapezoidal joins points with straight lines; Simpson's 1/3 fits parabolas through pairs of strips (so n must be even) and is far more accurate.</p></div>`,
+  num_ex:`<p><strong>Worked example</strong> — estimate ∫₀² f dx from the 9 sampled values below (h = 0.25, so n = 8). Notice the weight pattern: ends ×1, and for Simpson the odd points ×4 and the interior even points ×2.</p>`,
+  num_after:`<p><strong>Error / accuracy:</strong> the trapezoidal error is proportional to h²·f″, while Simpson's is proportional to h⁴·f⁴. That extra power of h is why Simpson is so much sharper for smooth functions — halving h cuts Simpson's error by ~16× versus ~4× for trapezoidal. For a "composite" rule you just apply the same formula over all n strips (which is exactly what's done above).</p>`,
+  ode_cat:"12 · Differential Equations", ode_title:"Euler & Runge-Kutta",
+  ode_body:`<div class="idea"><span class="label">The idea</span><p>An initial-value problem gives a starting point y(x₀) = y₀ and a slope rule y′ = f(x, y). You march forward in small steps of size h, using the slope to estimate the next y. Better methods sample the slope more cleverly within each step.</p></div><p><strong>Three methods, increasing accuracy:</strong></p>`,
+  ode_ex:`<p><strong>Worked example (Euler-1)</strong> — y′ = 3x + y², y(1) = 1.2, step h = 0.025, find y(1.1). That's 4 steps of 0.025:</p>`,
+  ode_after:`<p><strong>Key trade-off:</strong> Euler-1 is simplest but least accurate (error per step ∝ h²). Euler-2 (improved/Heun) and RK2 sample the slope twice per step, giving much better accuracy for the same h — Euler-2 and the RK2 form shown are essentially the same second-order method. Smaller h is always more accurate but means more steps.</p>`,
+  b_cat:"01 · Root-Finding", b_title:"Bisection Method",
+  b_body:`<div class="idea"><span class="label">The idea</span><p>If <strong>f(a)</strong> and <strong>f(b)</strong> have opposite signs and f is continuous, a root lies in <strong>[a, b]</strong>. Repeatedly halve the interval and keep the half that still brackets the root.</p></div><p><strong>Each iteration:</strong></p><ol><li>Midpoint <strong>c = (a + b) / 2</strong></li><li>Evaluate <strong>f(c)</strong></li><li>If f(a)·f(c) &lt; 0 → root in [a, c], set <strong>b = c</strong>. Else → root in [c, b], set <strong>a = c</strong>.</li><li>Repeat until the interval is small enough.</li></ol><p><strong>Key facts</strong></p><ul><li><strong>Always converges</strong> from a valid bracket — but slowly (linear).</li><li>Error after n steps ≤ <strong>(b − a) / 2ⁿ</strong>.</li><li>Iterations for tolerance ε:&nbsp; <strong>n ≥ log₂((b − a) / ε)</strong>.</li></ul><div class="trap"><span class="label">Exam traps</span><ul><li>You MUST start with a sign change: f(a)·f(b) &lt; 0.</li><li>Compute the new midpoint from the <em>updated</em> a and b.</li></ul></div><p><strong>Worked example</strong> — root of f(x) = x³ − x − 2 on [1, 2]. &nbsp; f(1) = −2, f(2) = 4 → sign change ✓</p>`,
+  b_after:"Approaching the true root ≈ <strong>1.5214</strong>.",
+  n_cat:"02 · Root-Finding", n_title:"Newton-Raphson Method",
+  n_body:`<div class="idea"><span class="label">The idea</span><p>Use the tangent line at the current guess to jump to a better one. Very fast when it works.</p></div>`,
+  n_body2:`<p><strong>Key facts</strong></p><ul><li><strong>Quadratic convergence</strong> — roughly doubles correct digits each step near the root.</li><li>Needs the derivative f′(x).</li><li>Can <strong>fail or diverge</strong> if f′(xₙ) ≈ 0 or the start guess is poor.</li></ul><div class="trap"><span class="label">Exam traps</span><ul><li>Write f′(x) symbolically before plugging in numbers.</li><li>Carry enough decimals — precision is the whole point.</li></ul></div><p><strong>Worked example</strong> — f(x) = x³ − x − 2, so f′(x) = 3x² − 1. Start x₀ = 1.5.</p>`,
+  n_after:"Two steps from a rough guess → 4-decimal accuracy (true root ≈ 1.521380).",
+  s_cat:"03 · Root-Finding", s_title:"Secant Method",
+  s_body:`<div class="idea"><span class="label">The idea</span><p>Like Newton-Raphson, but approximate the derivative using two previous points — so you need <strong>no</strong> f′(x).</p></div>`,
+  s_after:"Needs <strong>two</strong> starting points. Converges almost as fast as Newton (order ≈ 1.618), with no derivative required.",
+  g_cat:"04 · Linear Systems · Direct", g_title:"Gaussian Elimination",
+  g_body:`<div class="idea"><span class="label">The idea</span><p>Use row operations to make the augmented matrix upper-triangular (forward elimination), then solve bottom-up (back substitution).</p></div><p><strong>Worked example</strong></p>`,
+  g_mid:"Augmented matrix → clear column 1, then column 2:",
+  g_back:`<p><strong>Back substitution:</strong> −z = 1 → <strong>z = −1</strong>; &nbsp; 0.5y + 0.5(−1) = 1 → <strong>y = 3</strong>; &nbsp; 2x + 3 − (−1) = 8 → <strong>x = 2</strong>.</p>`,
+  g_trap:`<div class="trap"><span class="label">Exam traps</span><ul><li><strong>Partial pivoting:</strong> if a pivot is 0 or tiny, swap rows so the largest-magnitude entry becomes the pivot — avoids dividing by ~0 and cuts rounding error.</li><li>Apply each row operation across the <em>whole</em> row, including the right-hand side.</li></ul></div>`,
+  j_cat:"05 · Linear Systems · Iterative", j_title:"Jacobi Iteration",
+  j_body:`<div class="idea"><span class="label">The idea</span><p>Solve each equation for its diagonal variable, then update <strong>all</strong> variables at once using values from the <em>previous</em> iteration only.</p></div><p><strong>Convergence:</strong> guaranteed if the matrix is <strong>diagonally dominant</strong> (each |diagonal| ≥ sum of |other entries in that row|). Always state this.</p>`,
+  j_mid:"Start (0, 0, 0) — all right-hand sides use old values:",
+  j_after:"Converging toward the true solution <strong>(2, 4, 3)</strong>.",
+  gs_cat:"06 · Linear Systems · Iterative", gs_title:"Gauss-Seidel Iteration",
+  gs_body:`<div class="idea"><span class="label">The idea</span><p>Same as Jacobi, but use <strong>new values as soon as they're available</strong> within the same iteration. Usually converges faster.</p></div><p>Same system, starting (0, 0, 0):</p>`,
+  gs_after:`<p>After 2 iterations it's already closer to <strong>(2, 4, 3)</strong> than Jacobi.</p><div class="idea" style="border-left-color:var(--accent-2)"><span class="label" style="color:var(--accent-2)">Say this on the exam</span><p>Jacobi updates everything at once from the previous step; Gauss-Seidel plugs in each new value immediately, so later variables in the same sweep already benefit from updated earlier ones.</p></div>`,
+  c_cat:"07 · Reference", c_title:"Method Comparison",
+  c_table:`<table><tr><th>Method</th><th>Type</th><th>Needs</th><th>Speed</th><th>Always works?</th></tr><tr><td>Bisection</td><td>Root-find</td><td>Sign-change bracket</td><td>Slow (linear)</td><td>Yes, if bracketed</td></tr><tr><td>Newton-Raphson</td><td>Root-find</td><td>f′(x), one guess</td><td>Fast (quadratic)</td><td>No — can diverge</td></tr><tr><td>Secant</td><td>Root-find</td><td>Two guesses</td><td>Fast (~1.6)</td><td>No</td></tr><tr><td>Fixed-point</td><td>Root-find</td><td>x = g(x)</td><td>Linear</td><td>Only if |g′|&lt;1</td></tr><tr><td>Gaussian elim.</td><td>Direct</td><td>The matrix</td><td>Finite steps</td><td>Yes (w/ pivoting)</td></tr><tr><td>Inverse matrix</td><td>Direct</td><td>det A ≠ 0</td><td>Finite steps</td><td>Yes if invertible</td></tr><tr><td>Jacobi</td><td>Iterative</td><td>Diag. dominance</td><td>Slower</td><td>If diag. dominant</td></tr><tr><td>Gauss-Seidel</td><td>Iterative</td><td>Diag. dominance</td><td>Faster than Jacobi</td><td>If diag. dominant</td></tr></table>`,
+  p_cat:"08 · Reference", p_title:"Practice Problems", p_intro:"Try each cold, then reveal the worked solution. Filter by difficulty:",
+  f_all:"All (23)", f_easy:"Easy", f_med:"Medium", f_hard:"Hard",
+  t_inv:"Inverse Matrix", t_fp:"Fixed-Point", t_ls:"Least Squares", t_ip:"Interpolation", t_num:"Integration", t_ode:"ODE / IVP",
+  b_easy:"Easy", b_med:"Medium", b_hard:"Hard", lbl_sol:"Solution", btn_show:"Show solution ↓", btn_hide:"Hide solution ↑",
+  t_bisection:"Bisection", t_newton:"Newton-Raphson", t_secant:"Secant", t_gauss:"Gaussian Elim.", t_jacobi:"Jacobi", t_seidel:"Gauss-Seidel",
+  p1_q:"Do 2 iterations of bisection for f(x) = x² − 2 on [1, 2]. Give the final interval.",
+  p1_a:`<p><strong>What we're doing:</strong> the root is where f crosses zero. Bisection traps it between two x-values whose f-values have opposite signs, then keeps halving the gap.</p><p><strong>Check the ends:</strong> f(1) = 1² − 2 = −1 (negative), f(2) = 2² − 2 = +2 (positive). Opposite signs ✓ → a root lies somewhere in [1, 2].</p><p><strong>Iteration 1:</strong> midpoint c = (1+2)/2 = 1.5. Test it: f(1.5) = 2.25 − 2 = +0.25 (positive). Since f(1.5) is positive like f(2), the sign change must be on the <em>left</em> half → new interval [1, 1.5].</p><p><strong>Iteration 2:</strong> c = (1+1.5)/2 = 1.25. f(1.25) = 1.5625 − 2 = −0.4375 (negative). The sign change is now between 1.25 and 1.5 → final interval <strong>[1.25, 1.5]</strong>. (The true root √2 ≈ 1.414 sits inside it ✓)</p>`,
+  p2_q:"How many bisection iterations are needed to locate a root in [2, 3] to within tolerance ε = 0.001?",
+  p2_a:`<p><strong>The key fact:</strong> each step cuts the interval exactly in half, so after n steps the remaining uncertainty is (b − a) / 2ⁿ. We want that to be no bigger than the tolerance ε.</p><p><strong>Step 1 — set up the inequality:</strong> (b − a)/2ⁿ ≤ ε, which rearranges to 2ⁿ ≥ (b − a)/ε.</p><p><strong>Step 2 — plug in numbers:</strong> b − a = 3 − 2 = 1 and ε = 0.001, so 2ⁿ ≥ 1/0.001 = 1000.</p><p><strong>Step 3 — solve for n:</strong> take log base 2 of both sides → n ≥ log₂(1000) ≈ 9.97. Since n must be a whole number of steps, round up → <strong>n = 10 iterations</strong>.</p>`,
+  p3_q:"f(x) = x³ − 4x + 1 has a root in [0, 1]. Do 3 iterations; state the bracket.",
+  p3_a:`<p><strong>Check the ends:</strong> f(0) = 1 (positive), f(1) = 1 − 4 + 1 = −2 (negative). Opposite signs → a root is in [0, 1].</p><p><strong>Iteration 1:</strong> c = 0.5, f(0.5) = 0.125 − 2 + 1 = −0.875 (negative). f(0) is positive, so the change sits between 0 and 0.5 → [0, 0.5].</p><p><strong>Iteration 2:</strong> c = 0.25, f(0.25) = 0.0156 − 1 + 1 = +0.0156 (positive). Change now between 0.25 and 0.5 → [0.25, 0.5].</p><p><strong>Iteration 3:</strong> c = 0.375, f(0.375) = −0.447 (negative). Change between 0.25 and 0.375 → final bracket <strong>[0.25, 0.375]</strong>. (True root ≈ 0.254 ✓)</p>`,
+  p4_q:"For f(x) = x² − 2, start x₀ = 1.5. Compute x₁.",
+  p4_a:`<p><strong>Newton's idea:</strong> from a guess, follow the tangent line down to a better guess. The rule is xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ), so you always need the derivative.</p><p><strong>Step 1 — find the derivative:</strong> f(x) = x² − 2, so f′(x) = 2x.</p><p><strong>Step 2 — evaluate both at x₀ = 1.5:</strong> f(1.5) = 2.25 − 2 = 0.25, and f′(1.5) = 2 × 1.5 = 3.</p><p><strong>Step 3 — apply the rule:</strong> x₁ = 1.5 − 0.25/3 = 1.5 − 0.0833 = <strong>1.41667</strong>. A single step already lands near √2 ≈ 1.41421.</p>`,
+  p5_q:"For f(x) = x³ − 10, start x₀ = 2. Compute x₁ and x₂.", p5_a:`<p><strong>Goal:</strong> find ∛10, which is the root of f(x) = x³ − 10. Derivative: f′(x) = 3x². Newton's rule: xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ). The two lines below are that rule applied twice:</p>`, p5_b:`<p><strong>Where the numbers come from — Step 1</strong> (x₀ = 2): f(2) = 8 − 10 = −2 and f′(2) = 3×4 = 12, so x₁ = 2 − (−2)/12 = 2.16667.<br><strong>Step 2</strong> (x₁ = 2.16667): f ≈ 0.174 and f′ ≈ 14.083, so x₂ = 2.16667 − 0.174/14.083 = 2.15431.</p><p>Two steps give three correct digits — true ∛10 ≈ 2.15443.</p>`,
+  p6_q:"For f(x) = x·eˣ − 1, start x₀ = 0.5. Compute x₁ and x₂.", p6_a:`<p><strong>Goal:</strong> the root of f(x) = x·eˣ − 1. Using the product rule, f′(x) = eˣ + x·eˣ = eˣ(1 + x). Then apply Newton's rule xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ):</p>`, p6_b:`<p><strong>Step 1</strong> (x₀ = 0.5): e^0.5 ≈ 1.6487, so f(0.5) = 0.5×1.6487 − 1 = −0.17564 and f′(0.5) = 1.6487×1.5 = 2.47308. Then x₁ = 0.5 − (−0.17564)/2.47308 = 0.57102.<br><strong>Step 2</strong> repeats with x₁: f ≈ 0.01078, f′ ≈ 2.78099, giving x₂ = 0.56714.</p><p>True root ≈ 0.567143 (the "omega constant").</p>`,
+  p7_q:"For f(x) = x² − 2 with x₀ = 1, x₁ = 2, compute x₂ and x₃.", p7_a:`<p><strong>The secant method</strong> is like Newton's, but instead of a derivative it estimates the slope from the last two points: xₙ₊₁ = xₙ − f(xₙ)·(xₙ − xₙ₋₁) / (f(xₙ) − f(xₙ₋₁)). We're given two starting points, x₀ = 1 and x₁ = 2.</p>`, p7_b:`<p><strong>Step 1</strong> uses x₀, x₁: f(1) = −1, f(2) = 2, so x₂ = 2 − 2·(2−1)/(2−(−1)) = 2 − 2/3 = 1.33333.<br><strong>Step 2</strong> slides the window forward — now use x₁ = 2 and x₂ = 1.33333 (where f = −0.22222) to get x₃ = 1.40000.</p><p>Converging to √2 ≈ 1.41421, with no derivative needed.</p>`,
+  p8_q:"For f(x) = cos(x) − x with x₀ = 0, x₁ = 1 (radians), compute x₂ and x₃.", p8_a:`<p><strong>Secant rule again:</strong> xₙ₊₁ = xₙ − f(xₙ)·(xₙ − xₙ₋₁)/(f(xₙ) − f(xₙ₋₁)). First evaluate f at both starting points (calculator in radians): f(0) = cos(0) − 0 = 1, and f(1) = cos(1) − 1 = −0.459698.</p>`, p8_b:`<p><strong>Step 1</strong> (using x₀, x₁): x₂ = 1 − (−0.459698)·(1−0)/(−0.459698 − 1) = 0.685073.<br><strong>Step 2</strong> (using x₁, x₂, where f(x₂) ≈ 0.08948): x₃ = 0.736381 — closing in on the true root ≈ 0.739085.</p>`,
+  p9_q:"Solve by elimination: &nbsp; x + y = 5, &nbsp; 2x − y = 1.", p9_a:`<p><strong>Elimination</strong> means combining the two equations so one variable cancels out.</p><p><strong>Step 1 — cancel x:</strong> equation 1 is x + y = 5; equation 2 is 2x − y = 1. Subtract 2 × (equation 1) from equation 2: (2x − y) − 2(x + y) = 1 − 10, which simplifies to −3y = −9 → <strong>y = 3</strong>.</p><p><strong>Step 2 — back-substitute:</strong> put y = 3 back into equation 1: x + 3 = 5 → <strong>x = 2</strong>. Solution (x, y) = (2, 3).</p>`,
+  p10_q:"Solve:", p10_a:`<p><strong>Forward elimination</strong> (the block above): use row 1 to remove x from the lower rows, then use the new row 2 to remove y from row 3, until the bottom row holds only z. <strong>R2 − 2R1</strong> clears x from row 2; <strong>R3 − R1</strong> clears x from row 3; <strong>R3 + ⅓R2</strong> clears y, leaving −4.333·z = 4.333 → <strong>z = −1</strong>.</p><p><strong>Back-substitution</strong> (work upward): row 2 became −3y − z = −2 → −3y − (−1) = −2 → <strong>y = 1</strong>. Row 1 is x + y + z = 2 → x + 1 − 1 = 2 → <strong>x = 2</strong>. Solution <strong>(2, 1, −1)</strong>.</p>`,
+  p11_q:"Solve (note the zero pivot — you must use partial pivoting):", p11_a:`<p>The top-left number — the first "pivot" — is 0, and we can't divide by zero during elimination. <strong>Partial pivoting</strong> fixes this: swap row 1 with a lower row that has a non-zero (ideally the largest) entry in that column. Row 2 starts with 2, so swap R1 ↔ R2, then eliminate normally:</p>`, p11_b:`<p>After the swap: <strong>R3 − ½R1</strong> clears x from row 3, then <strong>R3 + 2R2</strong> clears y, leaving 6.5·z = 6.5 → <strong>z = 1</strong>.</p><p><strong>Back-substitute:</strong> row 2 gives y + 2(1) = 4 → <strong>y = 2</strong>; row 1 gives 2x + 4 + 1 = 7 → <strong>x = 1</strong>. Solution <strong>(1, 2, 1)</strong>.</p>`,
+  p12_q:"Two Jacobi iterations from (0,0) for: &nbsp; 5x + y = 6, &nbsp; x + 4y = 5.", p12_a:`<p><strong>Idea:</strong> rearrange each equation so one variable is alone, then plug in repeatedly. The Jacobi rule: in each round, every variable uses values from the <em>previous</em> round only.</p><p><strong>Setup:</strong> from 5x + y = 6 → x = (6 − y)/5; from x + 4y = 5 → y = (5 − x)/4.</p><p><strong>Round 1</strong> (start x = 0, y = 0): x = (6 − 0)/5 = 1.20, y = (5 − 0)/4 = 1.25.<br><strong>Round 2</strong> (use the round-1 values): x = (6 − 1.25)/5 = 0.95, y = (5 − 1.20)/4 = 0.95.</p><p>Result <strong>(0.95, 0.95)</strong>, heading toward the true answer (1, 1).</p>`,
+  p13_q:"Three Jacobi iterations from (0,0,0) for: &nbsp; 10x+y+z=12, &nbsp; x+10y+z=12, &nbsp; x+y+10z=12.", p13_a:`<p>Solve each equation for its diagonal variable: x = (12 − y − z)/10, y = (12 − x − z)/10, z = (12 − x − y)/10. Because the system is symmetric and we start at (0,0,0), x, y and z stay equal every round — so we can just track one number:</p>`, p13_b:`<p><strong>Round 1:</strong> (12 − 0 − 0)/10 = 1.200. <strong>Round 2:</strong> (12 − 1.2 − 1.2)/10 = 0.960. <strong>Round 3:</strong> (12 − 0.96 − 0.96)/10 = 1.008. The value oscillates and homes in on <strong>(1, 1, 1)</strong>.</p>`,
+  p14_q:"Two Gauss-Seidel iterations from (0,0) for: &nbsp; 5x + y = 6, &nbsp; x + 4y = 5. Compare with P12.", p14_a:`<p>Same system as P12, with the Gauss-Seidel twist: the moment you compute a new value, you use it <em>immediately</em> in the next equation of the same round (not the old value).</p><p><strong>Round 1:</strong> x = (6 − 0)/5 = 1.20. Now reuse this fresh x right away: y = (5 − 1.20)/4 = 0.95.<br><strong>Round 2:</strong> x = (6 − 0.95)/5 = 1.01, then y = (5 − 1.01)/4 = 0.9975.</p><p>Result <strong>(1.01, 0.9975)</strong> — closer to the true (1, 1) than Jacobi's (0.95, 0.95) after the same two rounds. Reusing fresh values speeds convergence.</p>`,
+  p15_q:"Two Gauss-Seidel iterations from (0,0,0) for: &nbsp; 8x+y−z=18, &nbsp; x+5y+z=18, &nbsp; 2x−y+6z=7.", p15_a:`<p>First rearrange each row for its diagonal variable: x = (18 − y + z)/8, y = (18 − x − z)/5, z = (7 − 2x + y)/6. Start at (0,0,0) and always feed in the newest value the instant you have it:</p>`, p15_b:`<p><strong>Round 1:</strong> x = 18/8 = 2.25; then y = (18 − 2.25 − 0)/5 = 3.15; then z = (7 − 2×2.25 + 3.15)/6 = 0.9417.<br><strong>Round 2:</strong> x = (18 − 3.15 + 0.9417)/8 = 1.974; y = (18 − 1.974 − 0.9417)/5 = 3.017; z = (7 − 2×1.974 + 3.017)/6 = 1.0115.</p><p>Closing in on <strong>(2, 3, 1)</strong>.</p>`,
+  p16_q:"Solve by the inverse-matrix method: 3x₁ − x₂ + 2x₃ = 12, x₁ + 2x₂ + 3x₃ = 11, 2x₁ − 2x₂ − x₃ = 2.", p16_a:`<p>Write it as A·x = b with b = (12, 11, 2). The inverse method gives x = A⁻¹·b, so first confirm A is invertible (det A = −7 ≠ 0 ✓), find A⁻¹, then dot each of its rows with b:</p>`, p16_b:`<p>Each xᵢ is one row of A⁻¹ times b. Result <strong>(x₁, x₂, x₃) = (3, 1, 2)</strong> — the same answer Gaussian elimination gives.</p>`,
+  p17_q:"Use Jacobi (3 iterations) on 8x + y − z = 8, 2x + y + 9z = 12, x − 7y + 2z = −4. Reorder for dominance first.", p17_a:`<p>Jacobi needs diagonal dominance, so reorder the rows: row 1 (8x) is strongest for x, row 3 (−7y) for y, row 2 (9z) for z. Solve each for its diagonal variable, then iterate from (0,0,0) using previous-round values only:</p>`, p17_b:`<p>After 3 rounds the values are circling in on the true solution <strong>(1, 1, 1)</strong>.</p>`,
+  p18_q:"Use fixed-point iteration to find the smallest positive root of x³ − 7x + 1 = 0 (2 d.p.).", p18_a:`<p>Isolate the single x from the −7x term: 7x = x³ + 1, giving g(x) = (x³ + 1)/7. Then iterate xₙ₊₁ = g(xₙ) starting at x₀ = 0:</p>`, p18_b:`<p>It settles at <strong>x ≈ 0.14</strong>. Convergence is guaranteed because |g′(x)| = 3x²/7 ≈ 0.009 &lt; 1 near the root.</p>`,
+  p19_q:"Fit a straight line y = a + bx to (−1,4) (−3,5) (4,7) (5,14) (6,12).", p19_a:`<p>The best-fit line comes from the normal-equation formulas. Build the four sums from the five points, then substitute:</p>`, p19_b:`<p>The best-fit straight line is <strong>y = 6.347 + 0.933x</strong>.</p>`,
+  p20_q:"Interpolate (−4,−166) (−1,8) (0,6) (1,4) (3,72) (4,178) and estimate y(−3).", p20_a:`<p>Build Newton's divided differences (or Lagrange) through the six points. The higher differences vanish, so the interpolating polynomial is just a cubic:</p>`, p20_b:`<p>Evaluating at x = −3 gives <strong>y(−3) = −60</strong>.</p>`,
+  p21_q:"Estimate ∫₀² f dx by Trapezoidal and Simpson from the 9 values (h = 0.25): 15, 21, 26, 28, 30, 27, 25, 22, 20.", p21_a:`<p>There are 9 points → n = 8 strips of width h = 0.25. Trapezoidal weights interior points ×2; Simpson (n even ✓) weights odd-indexed points ×4 and interior even-indexed points ×2:</p>`, p21_b:`<p><strong>Trapezoidal ≈ 49.125</strong>, <strong>Simpson ≈ 49.083</strong>. They're close because the data is smooth; Simpson is the more accurate of the two.</p>`,
+  p22_q:"Use Euler-1 to find y(1.1) for y′ = 3x + y², y(1) = 1.2, h = 0.025.", p22_a:`<p>Euler-1 steps forward with yₙ₊₁ = yₙ + h·f(xₙ, yₙ). Here f(x,y) = 3x + y² and h = 0.025, so it takes 4 steps from x = 1 to x = 1.1 — each row's f feeds the next y:</p>`, p22_b:`<p>After 4 steps, <strong>y(1.1) ≈ 1.7023</strong>.</p>`,
+  p23_q:"Use Runge-Kutta 2 to find y(2.3) for y′ = x² + y², y(2) = −1, h = 0.1.", p23_a:`<p>RK2 samples the slope twice per step: k₁ at the start, k₂ at the trial end-point, then averages them. With f(x,y) = x² + y² and h = 0.1, take 3 steps from x = 2:</p>`, p23_b:`<p>After 3 steps, <strong>y(2.3) ≈ 0.4754</strong>. (Improved/Euler-2 gives the same second-order result.)</p>`,
+  ck_cat:"09 · Reference", ck_title:"Last-Minute Checklist",
+  ck_body:`<ul><li><strong>Bisection</strong> — confirm the sign change; midpoint from <em>current</em> a, b.</li><li><strong>Newton</strong> — write f′(x) first; watch for f′(xₙ) ≈ 0.</li><li><strong>Gaussian</strong> — use partial pivoting if a pivot is small/zero; operate on whole rows.</li><li><strong>Jacobi vs Gauss-Seidel</strong> — state diagonal dominance; Gauss-Seidel reuses fresh values immediately.</li><li><strong>Precision</strong> — carry 4–6 decimals in iterative work unless told otherwise.</li></ul>`,
+  no_res:"No topics match that search.", footer:`Good luck Monday, <span class="gl">Nour</span>. ▲ You've got this.`
+ },
+ ar:{
+  kicker:"مدني · التحليل العددي", brand_h1:"دليل المذاكرة<br>للامتحان النهائي", brand_sub:"٥ طرق · أمثلة · تدريبات",
+  search_ph:"ابحث في كل المواضيع…",
+  grp_root:"إيجاد الجذور", grp_direct:"الأنظمة الخطية · مباشرة", grp_iter:"الأنظمة الخطية · تكرارية", grp_ref:"مراجع",
+  nav_bisection:"طريقة التنصيف", nav_newton:"نيوتن-رافسون", nav_secant:"طريقة القاطع", nav_gauss:"الحذف الجاوسي",
+  nav_jacobi:"طريقة جاكوبي", nav_seidel:"جاوس-زايدل", nav_compare:"جدول المقارنة", nav_practice:"مسائل تدريبية", nav_checklist:"قائمة المراجعة",
+  theme_light:"الوضع الفاتح", theme_dark:"الوضع الداكن",
+  hero_eyebrow:"التقنيات العددية", hero_h2:"كل ما تحتاجه ليوم الإثنين، في مكان واحد.",
+  hero_lead:"مراجعة قابلة للبحث للطرق الخمس الأساسية — إيجاد الجذور والأنظمة الخطية — كل طريقة مع الفكرة والصيغة والأخطاء التي تكلفك درجات ومثال محلول بالكامل. مسائل تدريبية بحلول خطوة بخطوة في النهاية.",
+  hero_chip:"▲ الامتحان النهائي — الإثنين",
+  nav_fp:"التكرار بالنقطة الثابتة", nav_inv:"طريقة المصفوفة المعكوسة", nav_err:"حد الخطأ / البتر",
+  nav_ls:"المربعات الصغرى", nav_ip:"الاستيفاء بكثير حدود", nav_num:"شبه المنحرف وسيمبسون", nav_ode:"أويلر ورنج-كوتا",
+  grp_fit:"ملاءمة المنحنيات", grp_interp:"الاستيفاء", grp_integ:"التكامل", grp_ode:"المعادلات التفاضلية",
+  fp_cat:"٠٤ · إيجاد الجذور", fp_title:"التكرار بالنقطة الثابتة",
+  fp_body:`<div class="idea"><span class="label">الفكرة</span><p>أعد كتابة المعادلة f(x) = 0 على الصورة <strong>x = g(x)</strong> (اعزل x في طرف). ثم أعد إدخال تخمينك باستمرار: xₙ₊₁ = g(xₙ). إذا استقرت القيمة فهي الجذر.</p></div><p><strong>شرط التقارب (مهم):</strong> يتقارب التكرار فقط عندما <strong>|g′(x)| &lt; 1</strong> قرب الجذر. يمكن إعادة ترتيب المعادلة بطرق عدة — بعضها يتقارب وبعضها يتباعد. اختر g ذات ميل صغير (|g′| &lt; 1).</p>`,
+  fp_ex:`<p><strong>مثال محلول</strong> — أوجد أصغر جذر موجب لـ x³ − 7x + 1 = 0. اعزل x المفردة من الحد −7x: 7x = x³ + 1، إذًا g(x) = (x³ + 1)/7. ابدأ من x₀ = 0:</p>`,
+  fp_after:`<p>تستقر عند <strong>x ≈ 0.1433</strong> في خطوات قليلة. لماذا بهذه السرعة؟ g′(x) = 3x²/7، وعند الجذر تساوي نحو 0.009 — أقل بكثير من 1، فيتقلص الخطأ بشدة في كل خطوة.</p>`,
+  inv_cat:"٠٥ · الأنظمة الخطية · مباشرة", inv_title:"طريقة المصفوفة المعكوسة",
+  inv_body:`<div class="idea"><span class="label">الفكرة</span><p>اكتب النظام كمعادلة مصفوفية A·x = b. إذا كان للمصفوفة A معكوس، اضرب الطرفين في A⁻¹ لتحصل على الحل دفعة واحدة: x = A⁻¹·b.</p></div><p><strong>كيف نوجد A⁻¹ (3×3):</strong> A⁻¹ = adj(A) / det(A) — المصفوفة المرافقة (منقول مصفوفة العوامل المرافقة) مقسومة على المحدد. ويوجد فقط إذا كان <strong>det A ≠ 0</strong>.</p>`,
+  inv_ex:`<p><strong>مثال محلول</strong> — حُل 3x₁ − x₂ + 2x₃ = 12، x₁ + 2x₂ + 3x₃ = 11، 2x₁ − 2x₂ − x₃ = 2. أولًا det A = −7 (غير صفري ✓)، ثم نبني المعكوس:</p>`,
+  inv_after:`<p>ضرب A⁻¹ في b يعطي <strong>(x₁, x₂, x₃) = (3, 1, 2)</strong> — نفس نتيجة الحذف الجاوسي. <strong>متى نستخدم أيًّا منهما:</strong> لنظام واحد، الحذف الجاوسي أسرع. أما المعكوس فيفيد عند حل A·x = b لقيم <em>كثيرة</em> مختلفة من b لنفس A.</p>`,
+  err_cat:"٠٨ · الأنظمة الخطية · تكرارية", err_title:"حد الخطأ / البتر",
+  err_body:`<div class="idea"><span class="label">الفكرة</span><p>بعد k خطوة من جاكوبي أو جاوس-زايدل، كم قد تبعد عن الحل الحقيقي؟ يمكن حصر ذلك باستخدام مقدار تغيّر الخطوة الأخيرة، مضروبًا في "حجم" مصفوفة التكرار T.</p></div><p>اكتب كل خطوة على الصورة x⁽ᵏ⁾ = T·x⁽ᵏ⁻¹⁾ + c. القيمة ‖T‖ (أكبر مجموع صف للمعاملات غير القطرية مقسومة على قطرها) تتحكم بكل شيء. إذا ‖T‖ &lt; 1 تتقارب الطريقة، ويحقق الخطأ المتبقي:</p>`,
+  err_after:`<p><strong>كيفية الاستخدام:</strong> احسب ‖T‖ من المعادلات المعاد ترتيبها، خُذ الفرق بين آخر تكرارين، ثم عوّض. كلما صغُرت ‖T‖ (هيمنة قطرية أقوى) ضاق الحد وأسرع التقارب. هذا هو "الحد العلوي للبتر الموضعي" الذي يطلبه الواجب.</p>`,
+  ls_cat:"٠٩ · ملاءمة المنحنيات", ls_title:"المربعات الصغرى",
+  ls_body:`<div class="idea"><span class="label">الفكرة</span><p>نادرًا ما تقع نقاط البيانات على خط مثالي. تجد طريقة المربعات الصغرى المنحنى الذي يصغّر مجموع مربعات الفجوات الرأسية (البواقي) — "أفضل ملاءمة". للخط المستقيم نحل "معادلتين طبيعيتين" لإيجاد a و b.</p></div><p><strong>الوصفة:</strong> ابنِ جدولًا بـ x و y و x·y و x²، اجمع كل عمود، ثم عوّض المجاميع مباشرة في الصيغ.</p>`,
+  ls_ex:`<p><strong>مثال محلول</strong> — لائم y = a + b·x للنقاط الخمس (−1,4) (−3,5) (4,7) (5,14) (6,12). ابنِ المجاميع:</p>`,
+  ls_after:`<p><strong>الأشكال الأخرى تستخدم نفس الحيلة:</strong> لملاءمة y = a + b·x²، عوّض X = x² ثم طبّق صيغة الخط نفسها على (X, y). ولـ y = a + b/x، عوّض X = 1/x. ولكثير حدود من الدرجة الثانية y = a + bx + cx²، تُكوّن ثلاث معادلات طبيعية بدل اثنتين (باستخدام Σx³ و Σx⁴ أيضًا).</p>`,
+  ip_cat:"١٠ · الاستيفاء", ip_title:"الاستيفاء بكثير حدود",
+  ip_body:`<div class="idea"><span class="label">الفكرة</span><p>أوجد كثير الحدود الوحيد الذي يمر <em>تمامًا</em> بكل النقاط المعطاة، ثم احسب قيمته حيثما شئت. مع n+1 نقطة تحصل على كثير حدود من الدرجة n على الأكثر. تبني كلٌّ من لاجرانج وفروق نيوتن المقسّمة نفس كثير الحدود — وطريقة نيوتن أسهل في التوسيع عند إضافة نقاط.</p></div>`,
+  ip_ex:`<p><strong>مثال محلول</strong> — استوفِ النقاط الست أدناه وقدّر y(−3). ببناء كثير حدود الفروق المقسّمة (تنعدم الفروق العليا هنا)، يختزل إلى مكعّب أنيق:</p>`,
+  ip_after:`<p><strong>الدقة:</strong> يأخذ الخطأ المتبقي صورة (الفرق المقسّم التالي) × (x−x₀)(x−x₁)… فإذا أُعطي حد مثل |y⁽ⁿ⁾(x)| ≤ Mⁿ، يتقلص الخطأ بتقلص ذلك الحد وتباعد النقاط. الاستيفاء <em>داخل</em> مدى البيانات موثوق، أما خارجه (الاستقراء) فمحفوف بالمخاطر.</p>`,
+  num_cat:"١١ · التكامل", num_title:"شبه المنحرف وسيمبسون",
+  num_body:`<div class="idea"><span class="label">الفكرة</span><p>لتقريب المساحة ∫f dx، قسّم [a, b] إلى n شريحة متساوية عرض كلٍّ h واجمع مساحات الشرائح. شبه المنحرف يصل النقاط بخطوط مستقيمة؛ وسيمبسون 1/3 يلائم قطوعًا مكافئة لكل زوج شرائح (لذا يجب أن يكون n زوجيًا) وهو أدق بكثير.</p></div>`,
+  num_ex:`<p><strong>مثال محلول</strong> — قدّر ∫₀² f dx من القيم التسع أدناه (h = 0.25، إذًا n = 8). لاحظ نمط الأوزان: الطرفان ×1، وفي سيمبسون النقاط الفردية ×4 والداخلية الزوجية ×2.</p>`,
+  num_after:`<p><strong>الخطأ / الدقة:</strong> خطأ شبه المنحرف يتناسب مع h²·f″، بينما خطأ سيمبسون يتناسب مع h⁴·f⁴. هذه القوة الإضافية لـ h هي سبب دقة سيمبسون العالية للدوال الملساء — تنصيف h يقلل خطأ سيمبسون نحو 16 ضعفًا مقابل 4 أضعاف لشبه المنحرف. في القاعدة "المركّبة" تطبّق الصيغة نفسها على كل الشرائح n (وهو ما فُعل أعلاه).</p>`,
+  ode_cat:"١٢ · المعادلات التفاضلية", ode_title:"أويلر ورنج-كوتا",
+  ode_body:`<div class="idea"><span class="label">الفكرة</span><p>تعطيك مسألة القيمة الابتدائية نقطة بداية y(x₀) = y₀ وقاعدة ميل y′ = f(x, y). تتقدّم بخطوات صغيرة بمقدار h مستخدمًا الميل لتقدير y التالية. الطرق الأفضل تعاين الميل بذكاء أكبر داخل كل خطوة.</p></div><p><strong>ثلاث طرق بدقة متزايدة:</strong></p>`,
+  ode_ex:`<p><strong>مثال محلول (أويلر-1)</strong> — y′ = 3x + y²، y(1) = 1.2، الخطوة h = 0.025، أوجد y(1.1). أي 4 خطوات بمقدار 0.025:</p>`,
+  ode_after:`<p><strong>المقايضة الأساسية:</strong> أويلر-1 الأبسط لكنه الأقل دقة (الخطأ لكل خطوة ∝ h²). أما أويلر-2 (المحسّن/Heun) و RK2 فيعاينان الميل مرتين لكل خطوة، فيعطيان دقة أعلى لنفس h — وأويلر-2 وصورة RK2 المعروضة هما الطريقة نفسها من الدرجة الثانية تقريبًا. كلما صغُرت h زادت الدقة لكن مع خطوات أكثر.</p>`,
+  b_cat:"٠١ · إيجاد الجذور", b_title:"طريقة التنصيف",
+  b_body:`<div class="idea"><span class="label">الفكرة</span><p>إذا كانت <strong>f(a)</strong> و<strong>f(b)</strong> لهما إشارتان متعاكستان وكانت f متصلة، فإن الجذر يقع داخل <strong>[a, b]</strong>. نقسّم الفترة إلى نصفين تكرارًا ونحتفظ بالنصف الذي ما زال يحصر الجذر.</p></div><p><strong>في كل خطوة تكرارية:</strong></p><ol><li>نقطة المنتصف <strong>c = (a + b) / 2</strong></li><li>نحسب <strong>f(c)</strong></li><li>إذا كان f(a)·f(c) &lt; 0 ← الجذر في [a, c]، نضع <strong>b = c</strong>. وإلا ← الجذر في [c, b]، نضع <strong>a = c</strong>.</li><li>نكرر حتى تصبح الفترة صغيرة بما يكفي.</li></ol><p><strong>حقائق أساسية</strong></p><ul><li><strong>تتقارب دائمًا</strong> من حصر صحيح — لكن ببطء (خطيًا).</li><li>الخطأ بعد n خطوة ≤ <strong>(b − a) / 2ⁿ</strong>.</li><li>عدد الخطوات للوصول لدقة ε:&nbsp; <strong>n ≥ log₂((b − a) / ε)</strong>.</li></ul><div class="trap"><span class="label">أخطاء شائعة في الامتحان</span><ul><li>يجب أن تبدأ بتغير في الإشارة: f(a)·f(b) &lt; 0.</li><li>احسب المنتصف الجديد من قيم a وb <em>المحدّثة</em>.</li></ul></div><p><strong>مثال محلول</strong> — جذر f(x) = x³ − x − 2 على [1, 2]. &nbsp; f(1) = −2، f(2) = 4 ← تغيّر الإشارة ✓</p>`,
+  b_after:"يقترب من الجذر الحقيقي ≈ <strong>1.5214</strong>.",
+  n_cat:"٠٢ · إيجاد الجذور", n_title:"طريقة نيوتن-رافسون",
+  n_body:`<div class="idea"><span class="label">الفكرة</span><p>نستخدم خط المماس عند التخمين الحالي للقفز إلى تخمين أفضل. سريعة جدًا عندما تنجح.</p></div>`,
+  n_body2:`<p><strong>حقائق أساسية</strong></p><ul><li><strong>تقارب تربيعي</strong> — تقريبًا يتضاعف عدد الأرقام الصحيحة في كل خطوة قرب الجذر.</li><li>تتطلب المشتقة f′(x).</li><li>قد <strong>تفشل أو تتباعد</strong> إذا كان f′(xₙ) ≈ 0 أو كان التخمين الابتدائي سيئًا.</li></ul><div class="trap"><span class="label">أخطاء شائعة في الامتحان</span><ul><li>اكتب f′(x) رمزيًا قبل التعويض بالأرقام.</li><li>احتفظ بعدد كافٍ من الأرقام العشرية — الدقة هي جوهر الطريقة.</li></ul></div><p><strong>مثال محلول</strong> — f(x) = x³ − x − 2، إذًا f′(x) = 3x² − 1. ابدأ بـ x₀ = 1.5.</p>`,
+  n_after:"خطوتان من تخمين تقريبي ← دقة بأربعة أرقام عشرية (الجذر الحقيقي ≈ 1.521380).",
+  s_cat:"٠٣ · إيجاد الجذور", s_title:"طريقة القاطع",
+  s_body:`<div class="idea"><span class="label">الفكرة</span><p>مثل نيوتن-رافسون، لكن نقرّب المشتقة باستخدام نقطتين سابقتين — فلا نحتاج إلى <strong>f′(x)</strong>.</p></div>`,
+  s_after:"تتطلب <strong>نقطتين</strong> ابتدائيتين. تتقارب بسرعة قريبة من نيوتن (الرتبة ≈ 1.618) دون حاجة للمشتقة.",
+  g_cat:"٠٤ · الأنظمة الخطية · مباشرة", g_title:"الحذف الجاوسي",
+  g_body:`<div class="idea"><span class="label">الفكرة</span><p>نستخدم عمليات الصفوف لتحويل المصفوفة الموسّعة إلى مثلثية عُليا (الحذف الأمامي)، ثم نحل من الأسفل للأعلى (التعويض الخلفي).</p></div><p><strong>مثال محلول</strong></p>`,
+  g_mid:"المصفوفة الموسّعة ← نصفّر العمود الأول ثم العمود الثاني:",
+  g_back:`<p><strong>التعويض الخلفي:</strong> −z = 1 ← <strong>z = −1</strong>؛ &nbsp; 0.5y + 0.5(−1) = 1 ← <strong>y = 3</strong>؛ &nbsp; 2x + 3 − (−1) = 8 ← <strong>x = 2</strong>.</p>`,
+  g_trap:`<div class="trap"><span class="label">أخطاء شائعة في الامتحان</span><ul><li><strong>المحور الجزئي (Pivoting):</strong> إذا كان المحور صفرًا أو صغيرًا جدًا، بدّل الصفوف بحيث يصبح أكبر عنصر (بالقيمة المطلقة) هو المحور — لتفادي القسمة على ~0 وتقليل خطأ التقريب.</li><li>طبّق كل عملية صف على <em>الصف كامله</em>، بما في ذلك الطرف الأيمن.</li></ul></div>`,
+  j_cat:"٠٥ · الأنظمة الخطية · تكرارية", j_title:"طريقة جاكوبي التكرارية",
+  j_body:`<div class="idea"><span class="label">الفكرة</span><p>نحل كل معادلة لإيجاد متغيرها القطري، ثم نحدّث <strong>جميع</strong> المتغيرات دفعةً واحدة باستخدام قيم الخطوة <em>السابقة</em> فقط.</p></div><p><strong>التقارب:</strong> مضمون إذا كانت المصفوفة <strong>قطرية الهيمنة</strong> (كل |قطر| ≥ مجموع |باقي عناصر الصف|). اذكر هذا دائمًا.</p>`,
+  j_mid:"ابدأ بـ (0، 0، 0) — كل الأطراف اليمنى تستخدم القيم القديمة:",
+  j_after:"يتقارب نحو الحل الحقيقي <strong>(2، 4، 3)</strong>.",
+  gs_cat:"٠٦ · الأنظمة الخطية · تكرارية", gs_title:"طريقة جاوس-زايدل",
+  gs_body:`<div class="idea"><span class="label">الفكرة</span><p>مثل جاكوبي، لكن نستخدم <strong>القيم الجديدة فور توفرها</strong> داخل نفس الخطوة التكرارية. عادةً تتقارب أسرع.</p></div><p>نفس النظام، بدءًا من (0، 0، 0):</p>`,
+  gs_after:`<p>بعد خطوتين فقط أصبح أقرب إلى <strong>(2، 4، 3)</strong> من جاكوبي.</p><div class="idea" style="border-right-color:var(--accent-2)"><span class="label" style="color:var(--accent-2)">اذكر هذا في الامتحان</span><p>جاكوبي يحدّث كل شيء دفعة واحدة من الخطوة السابقة؛ أما جاوس-زايدل فيعوّض كل قيمة جديدة فورًا، فتستفيد المتغيرات اللاحقة في نفس الدورة من القيم المحدّثة قبلها.</p></div>`,
+  c_cat:"٠٧ · مراجع", c_title:"مقارنة الطرق",
+  c_table:`<table><tr><th>الطريقة</th><th>النوع</th><th>تتطلب</th><th>السرعة</th><th>تعمل دائمًا؟</th></tr><tr><td>التنصيف</td><td>إيجاد جذر</td><td>حصر بتغير إشارة</td><td>بطيئة (خطية)</td><td>نعم، إذا حُصر</td></tr><tr><td>نيوتن-رافسون</td><td>إيجاد جذر</td><td>f′(x)، تخمين واحد</td><td>سريعة (تربيعية)</td><td>لا — قد تتباعد</td></tr><tr><td>القاطع</td><td>إيجاد جذر</td><td>تخمينان</td><td>سريعة (~1.6)</td><td>لا</td></tr><tr><td>النقطة الثابتة</td><td>إيجاد جذر</td><td>x = g(x)</td><td>خطية</td><td>فقط إذا |g′|&lt;1</td></tr><tr><td>الحذف الجاوسي</td><td>مباشرة</td><td>المصفوفة</td><td>خطوات منتهية</td><td>نعم (مع المحور)</td></tr><tr><td>المصفوفة المعكوسة</td><td>مباشرة</td><td>det A ≠ 0</td><td>خطوات منتهية</td><td>نعم إذا قابلة للعكس</td></tr><tr><td>جاكوبي</td><td>تكرارية</td><td>هيمنة قطرية</td><td>أبطأ</td><td>إن كانت قطرية الهيمنة</td></tr><tr><td>جاوس-زايدل</td><td>تكرارية</td><td>هيمنة قطرية</td><td>أسرع من جاكوبي</td><td>إن كانت قطرية الهيمنة</td></tr></table>`,
+  p_cat:"٠٨ · مراجع", p_title:"مسائل تدريبية", p_intro:"حاول حل كل مسألة بنفسك، ثم اكشف الحل. صفِّ حسب الصعوبة:",
+  f_all:"الكل (٢٣)", f_easy:"سهل", f_med:"متوسط", f_hard:"صعب",
+  t_inv:"المصفوفة المعكوسة", t_fp:"النقطة الثابتة", t_ls:"المربعات الصغرى", t_ip:"الاستيفاء", t_num:"التكامل", t_ode:"معادلة تفاضلية",
+  b_easy:"سهل", b_med:"متوسط", b_hard:"صعب", lbl_sol:"الحل", btn_show:"إظهار الحل ↓", btn_hide:"إخفاء الحل ↑",
+  t_bisection:"التنصيف", t_newton:"نيوتن-رافسون", t_secant:"القاطع", t_gauss:"الحذف الجاوسي", t_jacobi:"جاكوبي", t_seidel:"جاوس-زايدل",
+  p1_q:"نفّذ خطوتين من التنصيف لـ f(x) = x² − 2 على [1, 2]. اكتب الفترة النهائية.",
+  p1_a:`<p><strong>ما الذي نفعله:</strong> الجذر هو النقطة التي تعبر عندها f الصفر. تحصر طريقة التنصيف الجذر بين قيمتَي x لهما إشارتان متعاكستان في f، ثم تنصّف المسافة باستمرار.</p><p><strong>افحص الطرفين:</strong> f(1) = 1² − 2 = −1 (سالبة)، f(2) = 2² − 2 = +2 (موجبة). الإشارتان متعاكستان ✓ ← يوجد جذر داخل [1, 2].</p><p><strong>الخطوة 1:</strong> المنتصف c = (1+2)/2 = 1.5. نختبره: f(1.5) = 2.25 − 2 = +0.25 (موجبة). بما أن f(1.5) موجبة مثل f(2)، فإن تغيّر الإشارة في النصف <em>الأيسر</em> ← الفترة الجديدة [1, 1.5].</p><p><strong>الخطوة 2:</strong> c = (1+1.5)/2 = 1.25. f(1.25) = 1.5625 − 2 = −0.4375 (سالبة). تغيّر الإشارة الآن بين 1.25 و1.5 ← الفترة النهائية <strong>[1.25, 1.5]</strong>. (الجذر الحقيقي √2 ≈ 1.414 يقع داخلها ✓)</p>`,
+  p2_q:"كم خطوة تنصيف تلزم لتحديد جذر في [2, 3] بدقة ε = 0.001؟",
+  p2_a:`<p><strong>الحقيقة الأساسية:</strong> كل خطوة تنصّف الفترة، فبعد n خطوة يصبح عدم اليقين المتبقي (b − a) / 2ⁿ. نريده ألا يتجاوز الدقة ε.</p><p><strong>الخطوة 1 — كوّن المتباينة:</strong> (b − a)/2ⁿ ≤ ε، وتُعاد ترتيبها إلى 2ⁿ ≥ (b − a)/ε.</p><p><strong>الخطوة 2 — عوّض بالأرقام:</strong> b − a = 3 − 2 = 1، و ε = 0.001، إذًا 2ⁿ ≥ 1/0.001 = 1000.</p><p><strong>الخطوة 3 — حُل لإيجاد n:</strong> خُذ اللوغاريتم للأساس 2 ← n ≥ log₂(1000) ≈ 9.97. وبما أن n عدد صحيح من الخطوات، نقرّب لأعلى ← <strong>n = 10 خطوات</strong>.</p>`,
+  p3_q:"للدالة f(x) = x³ − 4x + 1 جذر في [0, 1]. نفّذ ٣ خطوات واكتب الحصر.",
+  p3_a:`<p><strong>افحص الطرفين:</strong> f(0) = 1 (موجبة)، f(1) = 1 − 4 + 1 = −2 (سالبة). الإشارتان متعاكستان ← يوجد جذر في [0, 1].</p><p><strong>الخطوة 1:</strong> c = 0.5، f(0.5) = 0.125 − 2 + 1 = −0.875 (سالبة). f(0) موجبة، فالتغيّر بين 0 و0.5 ← [0, 0.5].</p><p><strong>الخطوة 2:</strong> c = 0.25، f(0.25) = 0.0156 − 1 + 1 = +0.0156 (موجبة). التغيّر الآن بين 0.25 و0.5 ← [0.25, 0.5].</p><p><strong>الخطوة 3:</strong> c = 0.375، f(0.375) = −0.447 (سالبة). التغيّر بين 0.25 و0.375 ← الحصر النهائي <strong>[0.25, 0.375]</strong>. (الجذر الحقيقي ≈ 0.254 ✓)</p>`,
+  p4_q:"للدالة f(x) = x² − 2، ابدأ بـ x₀ = 1.5. احسب x₁.",
+  p4_a:`<p><strong>فكرة نيوتن:</strong> انطلق من تخمين واتبع خط المماس نزولًا إلى تخمين أفضل. القاعدة xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ)، فأنت تحتاج المشتقة دائمًا.</p><p><strong>الخطوة 1 — أوجد المشتقة:</strong> f(x) = x² − 2، إذًا f′(x) = 2x.</p><p><strong>الخطوة 2 — احسب القيمتين عند x₀ = 1.5:</strong> f(1.5) = 2.25 − 2 = 0.25، و f′(1.5) = 2 × 1.5 = 3.</p><p><strong>الخطوة 3 — طبّق القاعدة:</strong> x₁ = 1.5 − 0.25/3 = 1.5 − 0.0833 = <strong>1.41667</strong>. خطوة واحدة تقترب من √2 ≈ 1.41421.</p>`,
+  p5_q:"للدالة f(x) = x³ − 10، ابدأ بـ x₀ = 2. احسب x₁ وx₂.", p5_a:`<p><strong>الهدف:</strong> إيجاد ∛10، وهو جذر f(x) = x³ − 10. المشتقة: f′(x) = 3x². قاعدة نيوتن: xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ). السطران أدناه هما تطبيق هذه القاعدة مرتين:</p>`, p5_b:`<p><strong>من أين أتت الأرقام — الخطوة 1</strong> (x₀ = 2): f(2) = 8 − 10 = −2 و f′(2) = 3×4 = 12، إذًا x₁ = 2 − (−2)/12 = 2.16667.<br><strong>الخطوة 2</strong> (x₁ = 2.16667): f ≈ 0.174 و f′ ≈ 14.083، إذًا x₂ = 2.16667 − 0.174/14.083 = 2.15431.</p><p>خطوتان تعطيان ثلاثة أرقام صحيحة — الجذر الحقيقي ∛10 ≈ 2.15443.</p>`,
+  p6_q:"للدالة f(x) = x·eˣ − 1، ابدأ بـ x₀ = 0.5. احسب x₁ وx₂.", p6_a:`<p><strong>الهدف:</strong> جذر f(x) = x·eˣ − 1. باستخدام قاعدة الضرب، f′(x) = eˣ + x·eˣ = eˣ(1 + x). ثم طبّق قاعدة نيوتن xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ):</p>`, p6_b:`<p><strong>الخطوة 1</strong> (x₀ = 0.5): e^0.5 ≈ 1.6487، إذًا f(0.5) = 0.5×1.6487 − 1 = −0.17564 و f′(0.5) = 1.6487×1.5 = 2.47308. ومنها x₁ = 0.5 − (−0.17564)/2.47308 = 0.57102.<br><strong>الخطوة 2</strong> تتكرر مع x₁: f ≈ 0.01078، f′ ≈ 2.78099، فينتج x₂ = 0.56714.</p><p>الجذر الحقيقي ≈ 0.567143 (ثابت أوميغا).</p>`,
+  p7_q:"للدالة f(x) = x² − 2 مع x₀ = 1، x₁ = 2، احسب x₂ وx₃.", p7_a:`<p><strong>طريقة القاطع</strong> تشبه نيوتن، لكنها بدل المشتقة تقدّر الميل من آخر نقطتين: xₙ₊₁ = xₙ − f(xₙ)·(xₙ − xₙ₋₁) / (f(xₙ) − f(xₙ₋₁)). لدينا نقطتان ابتدائيتان، x₀ = 1 و x₁ = 2.</p>`, p7_b:`<p><strong>الخطوة 1</strong> تستخدم x₀، x₁: f(1) = −1، f(2) = 2، إذًا x₂ = 2 − 2·(2−1)/(2−(−1)) = 2 − 2/3 = 1.33333.<br><strong>الخطوة 2</strong> تُزيح النافذة للأمام — استخدم الآن x₁ = 2 و x₂ = 1.33333 (حيث f = −0.22222) لتحصل على x₃ = 1.40000.</p><p>يتقارب نحو √2 ≈ 1.41421 دون حاجة لمشتقة.</p>`,
+  p8_q:"للدالة f(x) = cos(x) − x مع x₀ = 0، x₁ = 1 (بالراديان)، احسب x₂ وx₃.", p8_a:`<p><strong>قاعدة القاطع مجددًا:</strong> xₙ₊₁ = xₙ − f(xₙ)·(xₙ − xₙ₋₁)/(f(xₙ) − f(xₙ₋₁)). احسب أولًا f عند النقطتين الابتدائيتين (الآلة الحاسبة بالراديان): f(0) = cos(0) − 0 = 1، و f(1) = cos(1) − 1 = −0.459698.</p>`, p8_b:`<p><strong>الخطوة 1</strong> (باستخدام x₀، x₁): x₂ = 1 − (−0.459698)·(1−0)/(−0.459698 − 1) = 0.685073.<br><strong>الخطوة 2</strong> (باستخدام x₁، x₂ حيث f(x₂) ≈ 0.08948): x₃ = 0.736381 — يقترب من الجذر الحقيقي ≈ 0.739085.</p>`,
+  p9_q:"حُل بالحذف: &nbsp; x + y = 5، &nbsp; 2x − y = 1.", p9_a:`<p><strong>الحذف</strong> يعني دمج المعادلتين بحيث يُحذف أحد المتغيرين.</p><p><strong>الخطوة 1 — احذف x:</strong> المعادلة 1 هي x + y = 5؛ والمعادلة 2 هي 2x − y = 1. اطرح 2 × (المعادلة 1) من المعادلة 2: (2x − y) − 2(x + y) = 1 − 10، فتبسّط إلى −3y = −9 ← <strong>y = 3</strong>.</p><p><strong>الخطوة 2 — التعويض الخلفي:</strong> عوّض y = 3 في المعادلة 1: x + 3 = 5 ← <strong>x = 2</strong>. الحل (x, y) = (2, 3).</p>`,
+  p10_q:"حُل النظام:", p10_a:`<p><strong>الحذف الأمامي</strong> (الكتلة أعلاه): استخدم الصف 1 لإزالة x من الصفوف السفلية، ثم استخدم الصف 2 الجديد لإزالة y من الصف 3، حتى يحتوي الصف الأخير على z فقط. <strong>R2 − 2R1</strong> يحذف x من الصف 2؛ <strong>R3 − R1</strong> يحذف x من الصف 3؛ <strong>R3 + ⅓R2</strong> يحذف y، تاركًا −4.333·z = 4.333 ← <strong>z = −1</strong>.</p><p><strong>التعويض الخلفي</strong> (من الأسفل للأعلى): أصبح الصف 2 هو −3y − z = −2 ← −3y − (−1) = −2 ← <strong>y = 1</strong>. والصف 1 هو x + y + z = 2 ← x + 1 − 1 = 2 ← <strong>x = 2</strong>. الحل <strong>(2, 1, −1)</strong>.</p>`,
+  p11_q:"حُل (لاحظ المحور الصفري — يجب استخدام المحور الجزئي):", p11_a:`<p>العنصر العلوي الأيسر — المحور الأول — يساوي 0، ولا يمكن القسمة على صفر أثناء الحذف. <strong>المحور الجزئي</strong> يحل المشكلة: بدّل الصف 1 بصف سفلي يحوي عنصرًا غير صفري (والأكبر مفضّل) في ذلك العمود. الصف 2 يبدأ بـ 2، إذًا بدّل R1 ↔ R2 ثم احذف بشكل طبيعي:</p>`, p11_b:`<p>بعد التبديل: <strong>R3 − ½R1</strong> يحذف x من الصف 3، ثم <strong>R3 + 2R2</strong> يحذف y، تاركًا 6.5·z = 6.5 ← <strong>z = 1</strong>.</p><p><strong>التعويض الخلفي:</strong> الصف 2 يعطي y + 2(1) = 4 ← <strong>y = 2</strong>؛ والصف 1 يعطي 2x + 4 + 1 = 7 ← <strong>x = 1</strong>. الحل <strong>(1, 2, 1)</strong>.</p>`,
+  p12_q:"نفّذ خطوتي جاكوبي من (0,0) لـ: &nbsp; 5x + y = 6، &nbsp; x + 4y = 5.", p12_a:`<p><strong>الفكرة:</strong> أعد ترتيب كل معادلة بحيث ينفرد متغير واحد، ثم عوّض تكرارًا. قاعدة جاكوبي: في كل دورة، يستخدم كل متغير قيم الدورة <em>السابقة</em> فقط.</p><p><strong>الإعداد:</strong> من 5x + y = 6 ← x = (6 − y)/5؛ ومن x + 4y = 5 ← y = (5 − x)/4.</p><p><strong>الدورة 1</strong> (ابدأ x = 0، y = 0): x = (6 − 0)/5 = 1.20، y = (5 − 0)/4 = 1.25.<br><strong>الدورة 2</strong> (استخدم قيم الدورة 1): x = (6 − 1.25)/5 = 0.95، y = (5 − 1.20)/4 = 0.95.</p><p>النتيجة <strong>(0.95, 0.95)</strong>، متجهة نحو الحل الحقيقي (1, 1).</p>`,
+  p13_q:"نفّذ ٣ خطوات جاكوبي من (0,0,0) لـ: &nbsp; 10x+y+z=12، &nbsp; x+10y+z=12، &nbsp; x+y+10z=12.", p13_a:`<p>حُل كل معادلة لمتغيرها القطري: x = (12 − y − z)/10، y = (12 − x − z)/10، z = (12 − x − y)/10. ولأن النظام متماثل ونبدأ من (0,0,0)، تبقى x وy وz متساوية في كل دورة — فيمكن تتبّع رقم واحد فقط:</p>`, p13_b:`<p><strong>الدورة 1:</strong> (12 − 0 − 0)/10 = 1.200. <strong>الدورة 2:</strong> (12 − 1.2 − 1.2)/10 = 0.960. <strong>الدورة 3:</strong> (12 − 0.96 − 0.96)/10 = 1.008. تتذبذب القيمة وتقترب من <strong>(1, 1, 1)</strong>.</p>`,
+  p14_q:"نفّذ خطوتي جاوس-زايدل من (0,0) لـ: &nbsp; 5x + y = 6، &nbsp; x + 4y = 5. قارن مع P12.", p14_a:`<p>نفس نظام P12، لكن بإضافة لمسة جاوس-زايدل: فور حساب قيمة جديدة، تستخدمها <em>فورًا</em> في المعادلة التالية ضمن نفس الدورة (لا القيمة القديمة).</p><p><strong>الدورة 1:</strong> x = (6 − 0)/5 = 1.20. الآن أعد استخدام x الجديدة فورًا: y = (5 − 1.20)/4 = 0.95.<br><strong>الدورة 2:</strong> x = (6 − 0.95)/5 = 1.01، ثم y = (5 − 1.01)/4 = 0.9975.</p><p>النتيجة <strong>(1.01, 0.9975)</strong> — أقرب إلى الحل الحقيقي (1, 1) من نتيجة جاكوبي (0.95, 0.95) بعد نفس الدورتين. إعادة استخدام القيم الجديدة تسرّع التقارب.</p>`,
+  p15_q:"نفّذ خطوتي جاوس-زايدل من (0,0,0) لـ: &nbsp; 8x+y−z=18، &nbsp; x+5y+z=18، &nbsp; 2x−y+6z=7.", p15_a:`<p>أولًا أعد ترتيب كل صف لمتغيره القطري: x = (18 − y + z)/8، y = (18 − x − z)/5، z = (7 − 2x + y)/6. ابدأ من (0,0,0) واستخدم أحدث قيمة فور توفرها:</p>`, p15_b:`<p><strong>الدورة 1:</strong> x = 18/8 = 2.25؛ ثم y = (18 − 2.25 − 0)/5 = 3.15؛ ثم z = (7 − 2×2.25 + 3.15)/6 = 0.9417.<br><strong>الدورة 2:</strong> x = (18 − 3.15 + 0.9417)/8 = 1.974؛ y = (18 − 1.974 − 0.9417)/5 = 3.017؛ z = (7 − 2×1.974 + 3.017)/6 = 1.0115.</p><p>يقترب من <strong>(2, 3, 1)</strong>.</p>`,
+  p16_q:"حُل بطريقة المصفوفة المعكوسة: 3x₁ − x₂ + 2x₃ = 12، x₁ + 2x₂ + 3x₃ = 11، 2x₁ − 2x₂ − x₃ = 2.", p16_a:`<p>اكتبه بالصورة A·x = b حيث b = (12، 11، 2). تعطي طريقة المعكوس x = A⁻¹·b، فتأكد أولًا أن A قابلة للعكس (det A = −7 ≠ 0 ✓)، أوجد A⁻¹، ثم اضرب كل صف منها في b:</p>`, p16_b:`<p>كل xᵢ هو صف من A⁻¹ مضروبًا في b. النتيجة <strong>(x₁، x₂، x₃) = (3، 1، 2)</strong> — نفس نتيجة الحذف الجاوسي.</p>`,
+  p17_q:"نفّذ جاكوبي (3 خطوات) على 8x + y − z = 8، 2x + y + 9z = 12، x − 7y + 2z = −4. أعد الترتيب للهيمنة أولًا.", p17_a:`<p>يحتاج جاكوبي هيمنة قطرية، فأعد ترتيب الصفوف: الصف 1 (8x) الأقوى لـ x، والصف 3 (−7y) لـ y، والصف 2 (9z) لـ z. حُل كلًّا لمتغيره القطري، ثم كرّر من (0,0,0) بقيم الدورة السابقة فقط:</p>`, p17_b:`<p>بعد 3 دورات تدور القيم نحو الحل الحقيقي <strong>(1، 1، 1)</strong>.</p>`,
+  p18_q:"استخدم التكرار بالنقطة الثابتة لإيجاد أصغر جذر موجب لـ x³ − 7x + 1 = 0 (منزلتان عشريتان).", p18_a:`<p>اعزل x المفردة من الحد −7x: 7x = x³ + 1، فينتج g(x) = (x³ + 1)/7. ثم كرّر xₙ₊₁ = g(xₙ) بدءًا من x₀ = 0:</p>`, p18_b:`<p>تستقر عند <strong>x ≈ 0.14</strong>. التقارب مضمون لأن |g′(x)| = 3x²/7 ≈ 0.009 &lt; 1 قرب الجذر.</p>`,
+  p19_q:"لائم خطًا مستقيمًا y = a + bx للنقاط (−1,4) (−3,5) (4,7) (5,14) (6,12).", p19_a:`<p>يأتي خط أفضل ملاءمة من صيغ المعادلات الطبيعية. ابنِ المجاميع الأربعة من النقاط الخمس، ثم عوّض:</p>`, p19_b:`<p>خط أفضل ملاءمة المستقيم هو <strong>y = 6.347 + 0.933x</strong>.</p>`,
+  p20_q:"استوفِ النقاط (−4,−166) (−1,8) (0,6) (1,4) (3,72) (4,178) وقدّر y(−3).", p20_a:`<p>كوّن فروق نيوتن المقسّمة (أو لاجرانج) خلال النقاط الست. تنعدم الفروق العليا، فيكون كثير حدود الاستيفاء مكعّبًا فقط:</p>`, p20_b:`<p>بالتعويض عند x = −3 نحصل على <strong>y(−3) = −60</strong>.</p>`,
+  p21_q:"قدّر ∫₀² f dx بشبه المنحرف وسيمبسون من القيم التسع (h = 0.25): 15، 21، 26، 28، 30، 27، 25، 22، 20.", p21_a:`<p>لدينا 9 نقاط ← n = 8 شريحة عرضها h = 0.25. شبه المنحرف يزن النقاط الداخلية ×2؛ وسيمبسون (n زوجي ✓) يزن الفردية ×4 والداخلية الزوجية ×2:</p>`, p21_b:`<p><strong>شبه المنحرف ≈ 49.125</strong>، <strong>سيمبسون ≈ 49.083</strong>. متقاربان لأن البيانات ملساء؛ وسيمبسون الأدق.</p>`,
+  p22_q:"استخدم أويلر-1 لإيجاد y(1.1) لـ y′ = 3x + y²، y(1) = 1.2، h = 0.025.", p22_a:`<p>يتقدّم أويلر-1 بالصيغة yₙ₊₁ = yₙ + h·f(xₙ, yₙ). هنا f(x,y) = 3x + y² و h = 0.025، فيلزم 4 خطوات من x = 1 إلى x = 1.1 — قيمة f في كل صف تُغذّي y التالية:</p>`, p22_b:`<p>بعد 4 خطوات، <strong>y(1.1) ≈ 1.7023</strong>.</p>`,
+  p23_q:"استخدم رنج-كوتا من الدرجة الثانية لإيجاد y(2.3) لـ y′ = x² + y²، y(2) = −1، h = 0.1.", p23_a:`<p>يعاين RK2 الميل مرتين لكل خطوة: k₁ في البداية و k₂ عند نقطة النهاية التجريبية، ثم يأخذ متوسطهما. مع f(x,y) = x² + y² و h = 0.1، خُذ 3 خطوات من x = 2:</p>`, p23_b:`<p>بعد 3 خطوات، <strong>y(2.3) ≈ 0.4754</strong>. (المحسّن/أويلر-2 يعطي النتيجة نفسها من الدرجة الثانية.)</p>`,
+  ck_cat:"٠٩ · مراجع", ck_title:"قائمة المراجعة الأخيرة",
+  ck_body:`<ul><li><strong>التنصيف</strong> — تأكد من تغير الإشارة؛ المنتصف من قيم a، b <em>الحالية</em>.</li><li><strong>نيوتن</strong> — اكتب f′(x) أولًا؛ احذر من f′(xₙ) ≈ 0.</li><li><strong>الحذف الجاوسي</strong> — استخدم المحور الجزئي إن كان المحور صغيرًا/صفرًا؛ اعمل على الصفوف كاملة.</li><li><strong>جاكوبي مقابل جاوس-زايدل</strong> — اذكر الهيمنة القطرية؛ جاوس-زايدل يعيد استخدام القيم الجديدة فورًا.</li><li><strong>الدقة</strong> — احتفظ بـ ٤–٦ أرقام عشرية في العمل التكراري ما لم يُذكر غير ذلك.</li></ul>`,
+  no_res:"لا توجد مواضيع تطابق البحث.", footer:`بالتوفيق يوم الإثنين، <span class="gl">نور</span>. ▲ أنت قادر على ذلك.`
+ }
+};
+
+let curLang='en';
+function setLang(lang){
+  curLang=lang;
+  const root=document.documentElement;
+  root.setAttribute('lang',lang);
+  root.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(dict[lang][k]!==undefined) el.innerHTML=dict[lang][k];
+  });
+  document.getElementById('search').placeholder=dict[lang].search_ph;
+  document.getElementById('btn-en').classList.toggle('on',lang==='en');
+  document.getElementById('btn-ar').classList.toggle('on',lang==='ar');
+  // reset open solution buttons to the right label
+  document.querySelectorAll('.solve-btn').forEach(b=>{
+    const open=b.nextElementSibling.classList.contains('open');
+    b.innerHTML=open?dict[lang].btn_hide:dict[lang].btn_show;
+  });
+  // theme button label
+  const isDark=root.getAttribute('data-theme')==='dark';
+  document.getElementById('themeBtn').innerHTML=(isDark?'◐ ':'◑ ')+(isDark?dict[lang].theme_light:dict[lang].theme_dark);
+  if(document.getElementById('search').value) runSearch();
+}
+
+/* ---------- theme ---------- */
+function toggleTheme(){
+  const r=document.documentElement;
+  const isDark=r.getAttribute('data-theme')==='dark';
+  r.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('themeBtn').innerHTML=(isDark?'◑ ':'◐ ')+(isDark?dict[curLang].theme_dark:dict[curLang].theme_light);
+}
+/* ---------- nav / mobile ---------- */
+function toggleNav(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('scrim').classList.toggle('open');}
+/* ---------- solutions ---------- */
+function toggleSol(btn){
+  const sol=btn.nextElementSibling;
+  const open=sol.classList.toggle('open');
+  btn.innerHTML=open?dict[curLang].btn_hide:dict[curLang].btn_show;
+}
+/* ---------- difficulty filter ---------- */
+function setDiff(f){
+  document.getElementById('plist').setAttribute('data-filter',f);
+  document.querySelectorAll('#diffBar button').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+}
+/* ---------- progress + scrollspy ---------- */
+const navLinks=[...document.querySelectorAll('#nav a')];
+const secEls=navLinks.map(a=>document.getElementById(a.dataset.sec));
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('progress').style.width=(window.scrollY/h*100)+'%';
+  let cur=secEls[0];
+  for(const s of secEls){if(s&&s.getBoundingClientRect().top<160)cur=s;}
+  navLinks.forEach(a=>a.classList.toggle('active',a.dataset.sec===cur.id));
+});
+navLinks.forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=920)toggleNav();}));
+
+/* ---------- search ---------- */
+const searchEl=document.getElementById('search');
+const meta=document.getElementById('searchMeta');
+const noRes=document.getElementById('noResults');
+const allSections=[...document.querySelectorAll('section')];
+function clearMarks(el){el.querySelectorAll('mark').forEach(m=>{m.replaceWith(document.createTextNode(m.textContent));});el.normalize();}
+function highlight(node,re){
+  if(node.nodeType===3){
+    if(re.test(node.textContent)){
+      const span=document.createElement('span');
+      span.innerHTML=node.textContent.replace(re,m=>`<mark>${m}</mark>`);
+      const p=node.parentNode;while(span.firstChild)p.insertBefore(span.firstChild,node);p.removeChild(node);
+    }
+  }else if(node.nodeType===1&&!['MARK','SCRIPT','STYLE','INPUT','BUTTON'].includes(node.tagName)){
+    [...node.childNodes].forEach(c=>highlight(c,re));
+  }
+}
+let tmr;
+searchEl.addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(runSearch,120);});
+function runSearch(){
+  const q=searchEl.value.trim();
+  allSections.forEach(clearMarks);
+  if(!q){allSections.forEach(s=>s.classList.remove('hidden'));document.querySelector('.hero').classList.remove('hidden');noRes.classList.add('hidden');meta.textContent='';return;}
+  const safe=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re=new RegExp(safe,'gi');
+  let hits=0;
+  document.querySelector('.hero').classList.add('hidden');
+  allSections.forEach(s=>{
+    const hay=(s.textContent+' '+(s.dataset.search||'')).toLowerCase();
+    if(hay.includes(q.toLowerCase())){s.classList.remove('hidden');hits++;[...s.children].forEach(c=>highlight(c,re));}
+    else s.classList.add('hidden');
+  });
+  noRes.classList.toggle('hidden',hits>0);
+  meta.textContent=hits?(curLang==='ar'?`${hits} نتيجة`:`${hits} topic${hits>1?'s':''} matched`):'';
+}
+
+/* render from the translation source on load so content stays consistent */
+setLang('en');
+</script>
+</body>
+</html>
